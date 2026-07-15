@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Escritos</title>
+  <meta name="description" content="Reflexões sobre psicanálise, escuta e subjetividade.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#1F4E5F">
+  <link rel="canonical" href="">
+
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="escritos.css">
+
+  <!-- Editor de texto rico (só carregado no painel admin) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <div id="loader" aria-hidden="true">
+    <svg class="loader-wave" viewBox="0 0 64 24"><path d="M2 12c6-10 10 10 16 0s10 10 16 0 10 10 16 0" /></svg>
+  </div>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo logo-link" id="logo-text" aria-label="Página inicial"></a>
+      <nav class="nav-desktop" aria-label="Navegação principal">
+        <a href="index.html#quem-eu-sou">Quem eu sou</a>
+        <a href="index.html#quando">Quando faz sentido</a>
+        <a href="index.html#faq">Dúvidas</a>
+        <a href="escritos.html" class="active">Escritos</a>
+      </nav>
+      <div class="header-cta">
+        <!-- Sem auth bar: blog é só leitura -->
+        <div id="admin-auth-bar"></div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-mobile"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-overlay" id="nav-overlay"></div>
+  <nav class="nav-mobile" id="nav-mobile" aria-label="Navegação móvel">
+    <a href="index.html#quem-eu-sou">Quem eu sou</a>
+    <a href="index.html#quando">Quando faz sentido</a>
+    <a href="index.html#faq">Dúvidas</a>
+    <a href="escritos.html">Escritos</a>
+  </nav>
+
+  <main id="main">
+
+    <!-- ==================== LISTAGEM DOS ESCRITOS ==================== -->
+    <div id="view-list">
+      <section class="blog-hero">
+        <div class="container">
+          <div class="section-head center">
+            <div class="eyebrow">Blog</div>
+            <h1 id="blog-title">Escritos</h1>
+            <p id="blog-subtitle"></p>
+          </div>
+        </div>
+      </section>
+      <svg class="wave-divider" viewBox="0 0 1440 60" preserveAspectRatio="none" style="margin-top:-1px;"><path d="M0,30 C240,60 480,0 720,20 C960,40 1200,10 1440,30 L1440,60 L0,60 Z" fill="var(--surface)"/></svg>
+
+      <section style="background:var(--surface); padding-top: 0;">
+        <div class="container container-narrow">
+          <!-- Barra admin: só visível para a psicanalista logada -->
+          <div class="admin-bar" id="admin-bar">
+            <span class="label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
+              Você está logada como administradora.
+            </span>
+            <button class="btn btn-primary btn-sm" id="btn-new-post">Novo escrito</button>
+          </div>
+          <div class="posts-feed" id="posts-grid"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================== ESCRITO INDIVIDUAL ==================== -->
+    <article class="post-detail" id="view-post" style="display:none;"></article>
+
+  </main>
+
+  <footer class="site-footer" aria-label="Rodapé">
+    <div class="container">
+      <div class="footer-bottom" style="border-top:none;padding-top:0;">
+        <span>&copy; <span id="footer-year"></span> — Voltar para <a href="index.html">a página inicial</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL DO EDITOR (ADMIN) ==================== -->
+  <div class="editor-overlay" id="editor-overlay">
+    <div class="editor-modal">
+      <h2 id="editor-heading">Novo escrito</h2>
+
+      <div class="editor-field">
+        <label for="editor-title">Título</label>
+        <input type="text" id="editor-title" placeholder="Título do escrito">
+      </div>
+
+      <div class="editor-field">
+        <label for="editor-cover">Imagem de capa (URL)</label>
+        <input type="url" id="editor-cover" placeholder="https://...">
+      </div>
+
+      <div class="editor-field">
+        <label for="editor-excerpt">Resumo (aparece na listagem)</label>
+        <input type="text" id="editor-excerpt" placeholder="Uma ou duas frases sobre o escrito">
+      </div>
+
+      <div class="editor-field">
+        <label>Conteúdo</label>
+        <div id="quill-editor"></div>
+      </div>
+
+      <div class="editor-field editor-toggle">
+        <input type="checkbox" id="editor-published" checked>
+        <label for="editor-published" style="margin:0;">Publicar (desmarque para salvar como rascunho)</label>
+      </div>
+
+      <div class="editor-actions">
+        <button class="btn btn-outline btn-sm" id="editor-close-btn">Cancelar</button>
+        <div class="editor-actions-right">
+          <button class="btn btn-primary btn-sm" id="editor-save-btn">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase (Auth + Firestore) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
+  <!-- Editor de texto rico -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+
+  <script src="config.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="escritos.js"></script>
+  <script>
+    window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 300));
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

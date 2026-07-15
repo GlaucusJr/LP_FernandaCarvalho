@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Psicanalista | Landing Page</title>
+  <meta name="description" content="Atendimento psicanalítico presencial e online.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#1F4E5F">
+  <link rel="canonical" href="">
+
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
+
+  <div id="loader" aria-hidden="true">
+    <svg class="loader-wave" viewBox="0 0 64 24"><path d="M2 12c6-10 10 10 16 0s10 10 16 0 10 10 16 0" /></svg>
+  </div>
+
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <!-- Logo como imagem -->
+      <a href="#top" class="logo logo-link" id="logo-text" aria-label="Página inicial"></a>
+      <nav class="nav-desktop" aria-label="Navegação principal">
+        <a href="#quem-eu-sou">Quem eu sou</a>
+        <a href="#quando">Quando faz sentido</a>
+        <a href="#faq">Dúvidas</a>
+        <a href="escritos.html">Escritos</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#" class="btn btn-primary btn-sm wa-link" target="_blank" rel="noopener"><span class="wa-link-text">Falar no WhatsApp</span></a>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-mobile"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-overlay" id="nav-overlay"></div>
+  <nav class="nav-mobile" id="nav-mobile" aria-label="Navegação móvel">
+    <a href="#quem-eu-sou">Quem eu sou</a>
+    <a href="#quando">Quando faz sentido</a>
+    <a href="#faq">Dúvidas</a>
+    <a href="escritos.html">Escritos</a>
+    <a href="#" class="btn btn-primary btn-block wa-link" target="_blank" rel="noopener">Falar no WhatsApp</a>
+  </nav>
+
+  <main id="main">
+
+    <!-- ==================== HERO: foto esquerda, texto direita ==================== -->
+    <section class="hero" id="top" aria-label="Apresentação">
+      <div class="container hero-grid hero-grid-reversed">
+        <!-- hero-media vem ANTES no DOM mas visualmente à esquerda via CSS order -->
+        <div class="hero-media" id="hero-media"></div>
+        <div id="hero-content"></div>
+      </div>
+      <div class="hero-wave-bottom">
+        <svg class="wave-divider into-surface" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,40 L1440,80 L0,80 Z"/></svg>
+      </div>
+    </section>
+
+    <!-- ==================== QUEM EU SOU ==================== -->
+    <section class="about" id="quem-eu-sou" aria-labelledby="sobre-heading">
+      <div class="container about-grid">
+        <div class="about-photo" id="about-photo"></div>
+        <div class="about-text" id="about-text"></div>
+      </div>
+    </section>
+
+    <!-- ==================== QUANDO A ANÁLISE FAZ SENTIDO ==================== -->
+    <div id="quando"></div>
+    <section class="quando-section" id="quando-section" aria-labelledby="quando-heading"></section>
+
+    <!-- ==================== DEPOIMENTOS ==================== -->
+    <section class="testimonials" id="depoimentos" aria-labelledby="depoimentos-heading">
+      <div class="container">
+        <div class="section-head center">
+          <div class="eyebrow">Depoimentos</div>
+          <h2 id="depoimentos-heading">Histórias de quem passou por aqui</h2>
+        </div>
+        <div class="testi-track" id="testi-track"></div>
+      </div>
+    </section>
+
+    <!-- ==================== FAQ ==================== -->
+    <section class="faq" id="faq" aria-labelledby="faq-heading">
+      <div class="container">
+        <div class="section-head center">
+          <div class="eyebrow">Dúvidas frequentes</div>
+          <h2 id="faq-heading">Perguntas frequentes</h2>
+        </div>
+        <div class="faq-list" id="faq-list"></div>
+      </div>
+    </section>
+
+    <!-- ==================== CTA FINAL ==================== -->
+    <section class="cta-final" aria-labelledby="cta-final-heading">
+      <div class="container">
+        <div class="section-head center" id="cta-final-content"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" aria-label="Rodapé">
+    <div class="container" id="footer-content"></div>
+  </footer>
+
+  <a href="#" class="whatsapp-float wa-link" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .9.9-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1s-.7.8-.9 1c-.2.2-.3.2-.6.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.4-.5c.1-.1.2-.3.2-.4a.5.5 0 0 0 0-.5c-.1-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-1 2.2c0 1.3 1 2.6 1.1 2.8.1.2 2 3 4.8 4.3.7.3 1.2.5 1.6.6a3.9 3.9 0 0 0 1.8.1c.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2 0-.1-.2-.2-.4-.3z"/></svg>
+  </a>
+  <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+
+  <script src="config.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
