@@ -15,6 +15,19 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: none; background: none; }
 ul { list-style: none; }
 
+/* Escritos page: footer always at bottom (classe no body, sem depender de :has()) */
+body.page-escritos {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+body.page-escritos #main {
+  flex: 1 0 auto;
+}
+body.page-escritos .escritos-footer {
+  flex-shrink: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
@@ -133,7 +146,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* --------------------------------- HEADER ---------------------------------- */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: rgba(247, 242, 240, 0.75);
+  background: rgba(242, 249, 248, 0.88); /* fallback para navegadores sem color-mix() */
+  background: color-mix(in srgb, var(--background) 88%, transparent);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
@@ -229,8 +243,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 
 /* --------------------------------- ABOUT ------------------------------------ */
 .about { background: var(--surface); }
-.about-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 64px; align-items: center; }
-.about-photo { position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-soft); aspect-ratio: 3/4; }
+.about-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
+/* DOM traz a foto primeiro; invertendo com order para foto ficar à direita */
+.about-photo { order: 2; position: relative; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); aspect-ratio: 1/1; max-width: 440px; margin-left: auto; }
+.about-text { order: 1; }
 .about-photo img { width: 100%; height: 100%; object-fit: cover; }
 .about-text .lead { font-size: 1.1rem; margin-bottom: 28px; }
 
