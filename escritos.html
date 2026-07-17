@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
 
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="escritos.css">
+  <link rel="stylesheet" href="s.css">
 
   <!-- Editor de texto rico (só carregado no painel admin) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
@@ -80,7 +80,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
               Você está logada como administradora.
             </span>
-            <button class="btn btn-primary btn-sm" id="btn-new-post">Novo escrito</button>
+            <button class="btn btn-primary btn-sm" id="btn-new-post">Novo post</button>
           </div>
           <div class="posts-feed" id="posts-grid"></div>
         </div>
@@ -103,11 +103,11 @@
   <!-- ==================== MODAL DO EDITOR (ADMIN) ==================== -->
   <div class="editor-overlay" id="editor-overlay">
     <div class="editor-modal">
-      <h2 id="editor-heading">Novo escrito</h2>
+      <h2 id="editor-heading">Novo post</h2>
 
       <div class="editor-field">
         <label for="editor-title">Título</label>
-        <input type="text" id="editor-title" placeholder="Título do escrito">
+        <input type="text" id="editor-title" placeholder="Título do post">
       </div>
 
       <div class="editor-field">
@@ -117,7 +117,7 @@
 
       <div class="editor-field">
         <label for="editor-excerpt">Resumo (aparece na listagem)</label>
-        <input type="text" id="editor-excerpt" placeholder="Uma ou duas frases sobre o escrito">
+        <input type="text" id="editor-excerpt" placeholder="Uma ou duas frases sobre o post">
       </div>
 
       <div class="editor-field">
