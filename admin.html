@@ -515,7 +515,7 @@
         <div class="sidebar-label">Ações</div>
         <button class="sidebar-btn" id="nav-new-post">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          Novo escrito
+          Novo post
         </button>
       </nav>
 
@@ -527,7 +527,7 @@
             <h2 id="posts-view-title">Todos os Posts</h2>
             <button class="btn-primary" id="btn-new-post-main">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Novo escrito
+              Novo post
             </button>
           </div>
           <div class="posts-table">
@@ -553,7 +553,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               Voltar
             </button>
-            <h2 id="editor-heading">Novo escrito</h2>
+            <h2 id="editor-heading">Novo post</h2>
             <div class="editor-save-bar">
               <button class="btn-outline-sm" id="btn-save-draft">Salvar rascunho</button>
               <button class="btn-primary" id="btn-publish">
@@ -567,11 +567,11 @@
             <h3>Conteúdo</h3>
             <div class="field">
               <label for="ed-title">Título *</label>
-              <input type="text" id="ed-title" placeholder="Título do escrito">
+              <input type="text" id="ed-title" placeholder="Título do Post">
             </div>
             <div class="field">
               <label for="ed-excerpt">Resumo</label>
-              <input type="text" id="ed-excerpt" placeholder="Uma ou duas frases que apresentam o escrito">
+              <input type="text" id="ed-excerpt" placeholder="Uma ou duas frases que apresentam o Post">
             </div>
             <div class="field">
               <label>Conteúdo *</label>
@@ -615,8 +615,8 @@
       <div class="modal-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
       </div>
-      <h3>Excluir escrito?</h3>
-      <p>Esta ação não pode ser desfeita. O escrito será removido permanentemente.</p>
+      <h3>Excluir Post?</h3>
+      <p>Esta ação não pode ser desfeita. O post será removido permanentemente.</p>
       <div class="modal-actions">
         <button class="btn-cancel" id="delete-cancel">Cancelar</button>
         <button class="btn-delete-confirm" id="delete-confirm">Excluir</button>
@@ -761,7 +761,7 @@
                 : allPosts;
     const container = document.getElementById('posts-rows');
     if (posts.length === 0) {
-      container.innerHTML = `<div class="empty-state-table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>${filter === 'all' ? 'Nenhum escrito ainda.' : 'Nenhum escrito nesta categoria.'}</p></div>`;
+      container.innerHTML = `<div class="empty-state-table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>${filter === 'all' ? 'Nenhum post ainda.' : 'Nenhum post nesta categoria.'}</p></div>`;
       return;
     }
     container.innerHTML = posts.map(post => `
@@ -804,7 +804,7 @@
     document.getElementById('ed-published').checked = true;
     document.getElementById('toggle-label-text').textContent = 'Publicado';
     document.getElementById('cover-preview').classList.remove('visible');
-    document.getElementById('editor-heading').textContent = postId ? 'Editar escrito' : 'Novo escrito';
+    document.getElementById('editor-heading').textContent = postId ? 'Editar post' : 'Novo post';
     if (postId) {
       const post = allPosts.find(p => p.id === postId);
       if (post) {
@@ -846,7 +846,7 @@
     if (!editingPostId) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
     
     ref.set(data, { merge: true }).then(() => {
-      showToast(published ? '✓ Escrito publicado!' : '✓ Rascunho salvo.');
+      showToast(published ? '✓ Post publicado!' : '✓ Rascunho salvo.');
       editingPostId = ref.id;
       showView('posts'); setSidebarActive('nav-posts');
     }).catch(() => showToast('Erro ao salvar. Tente novamente.'))
@@ -871,7 +871,7 @@
     const btn = document.getElementById('delete-confirm');
     btn.disabled = true; btn.textContent = 'Excluindo…';
     db.collection('posts').doc(deleteTarget).delete()
-      .then(() => { showToast('Escrito excluído.'); document.getElementById('delete-modal').classList.remove('open'); deleteTarget = null; })
+      .then(() => { showToast('Post excluído.'); document.getElementById('delete-modal').classList.remove('open'); deleteTarget = null; })
       .catch(() => showToast('Não foi possível excluir.'))
       .finally(() => { btn.disabled = false; btn.textContent = 'Excluir'; });
   });
