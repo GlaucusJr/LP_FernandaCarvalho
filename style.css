@@ -681,6 +681,9 @@ body.modal-open { overflow: hidden; }
 /* ------------------------------------ CTA FINAL --------------------------------- */
 .cta-final { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: var(--white); text-align: center; position: relative; overflow: hidden; }
 .cta-final h2, .cta-final p { color: var(--white); }
+.cta-final .eyebrow { color: rgba(255,255,255,0.7); }
+.cta-final .btn-outline { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.5); }
+.cta-final .btn-outline:hover { background: rgba(255,255,255,0.12); border-color: var(--white); transform: translateY(-2px); }
 .cta-final .section-head { margin-inline: auto; }
 .cta-final-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 30px; }
 
