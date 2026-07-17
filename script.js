@@ -224,11 +224,11 @@ function renderTestimonials() {
   const el = document.getElementById('testi-track');
   if (!el) return;
 
-  el.className = 'caminhos-grid';
+  el.className = 'caminhos-topicos';
   el.innerHTML = CAMINHOS_ITEMS.map((item, i) => `
-    <div class="caminho-item" data-animate="fade-up" style="transition-delay:${i * 0.08}s">
-      <span class="caminho-leaf" aria-hidden="true">🌿</span>
-      <span class="caminho-texto">${item}</span>
+    <div class="caminho-topico-item" data-animate="fade-up" style="transition-delay:${i * 0.07}s">
+      <span class="caminho-topico-check" aria-hidden="true"></span>
+      <span class="caminho-topico-texto">${item}</span>
     </div>
   `).join('');
 }
@@ -249,33 +249,34 @@ function renderPrimeiroPasso() {
         <div class="eyebrow">Início</div>
         <h2 id="primeiro-passo-heading">Como dar o primeiro passo</h2>
       </div>
-      <div class="passos-grid">
-        <div class="passo-item" data-animate="fade-up" style="transition-delay:0s">
-          <div class="passo-num">①</div>
-          <div class="passo-body">
+      <div class="trilha-passos">
+        <div class="trilha-connector" aria-hidden="true"></div>
+        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0s">
+          <div class="trilha-num">1</div>
+          <div class="trilha-body">
             <h3>Entre em contato</h3>
             <p>Se desejar iniciar uma análise, entre em contato pelo WhatsApp para esclarecer dúvidas, verificar a disponibilidade de horários e agendar um primeiro encontro.</p>
           </div>
         </div>
-        <div class="passo-item" data-animate="fade-up" style="transition-delay:0.1s">
-          <div class="passo-num">②</div>
-          <div class="passo-body">
+        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0.1s">
+          <div class="trilha-num">2</div>
+          <div class="trilha-body">
             <h3>Primeiro encontro</h3>
-            <p>A primeira sessão é um espaço para que você possa falar sobre o que motivou sua busca e conhecer como o trabalho analítico acontece. Também será um momento para conversarmos sobre suas dúvidas e expectativas em relação ao processo.</p>
+            <p>A primeira sessão é um espaço para que você possa falar sobre o que motivou sua busca e conhecer como o trabalho analítico acontece.</p>
           </div>
         </div>
-        <div class="passo-item" data-animate="fade-up" style="transition-delay:0.2s">
-          <div class="passo-num">③</div>
-          <div class="passo-body">
+        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0.2s">
+          <div class="trilha-num">3</div>
+          <div class="trilha-body">
             <h3>Início do processo</h3>
-            <p>Se, ao final desse primeiro encontro, entendermos que a análise é o caminho mais adequado, definiremos juntos a continuidade dos encontros.</p>
+            <p>Se entendermos que a análise é o caminho adequado, definiremos juntos a continuidade dos encontros.</p>
           </div>
         </div>
-        <div class="passo-item" data-animate="fade-up" style="transition-delay:0.3s">
-          <div class="passo-num">④</div>
-          <div class="passo-body">
+        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0.3s">
+          <div class="trilha-num">4</div>
+          <div class="trilha-body">
             <h3>Um percurso singular</h3>
-            <p>Cada análise é única. O processo se constrói ao longo do tempo, respeitando a história, o ritmo e a singularidade de cada pessoa.</p>
+            <p>Cada análise é única. O processo se constrói ao longo do tempo, respeitando a história e o ritmo de cada pessoa.</p>
           </div>
         </div>
       </div>
@@ -285,6 +286,29 @@ function renderPrimeiroPasso() {
 }
 
 /* --------------------------------- MINHA CLÍNICA --------------------------------- */
+const CLINICA_ITEMS = [
+  {
+    titulo: "Escuta sem respostas prontas",
+    resumo: "Um espaço para novos sentidos surgirem.",
+    conteudo: "Cada pessoa chega com uma história singular. Meu trabalho não é oferecer soluções prontas, mas sustentar um espaço em que novos sentidos possam surgir. A escuta analítica não interpreta de fora — ela acompanha, sustenta e oferece um lugar para que o próprio sujeito descubra o que não sabia que sabia.",
+  },
+  {
+    titulo: "Respeito ao tempo de cada processo",
+    resumo: "Nenhum percurso é igual ao outro.",
+    conteudo: "A análise acontece no ritmo de cada pessoa. Não existe um percurso igual ao outro, nem um tempo pré-determinado para que as coisas façam sentido. O processo é construído junto, respeitando a história, o momento e a singularidade de quem está na análise.",
+  },
+  {
+    titulo: "Formação permanente",
+    resumo: "Estudo contínuo como sustentação da prática.",
+    conteudo: "A prática clínica é sustentada pelo estudo contínuo, pela supervisão e pela própria experiência de análise. Mantenho minha formação ativa por meio de grupos de leitura, supervisão clínica, seminários e cursos de atualização permanentes.",
+  },
+  {
+    titulo: "Ética e confidencialidade",
+    resumo: "Sigilo e respeito em cada encontro.",
+    conteudo: "Toda análise acontece em um espaço de escuta comprometido com o sigilo, o respeito e a singularidade de cada história. O sigilo é um dos princípios fundamentais da prática psicanalítica e faz parte do compromisso ético que sustenta todo o processo analítico.",
+  },
+];
+
 function renderMinhaClinica() {
   const primeiroPasso = document.getElementById('primeiro-passo');
   if (!primeiroPasso) return;
@@ -300,31 +324,48 @@ function renderMinhaClinica() {
         <h2 id="clinica-heading">Minha Clínica</h2>
         <p>Princípios que orientam meu trabalho</p>
       </div>
-      <div class="clinica-grid">
-        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0s">
-          <div class="clinica-leaf">🌿</div>
-          <h3>Escuta sem respostas prontas</h3>
-          <p>Cada pessoa chega com uma história singular. Meu trabalho não é oferecer soluções prontas, mas sustentar um espaço em que novos sentidos possam surgir.</p>
-        </div>
-        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0.1s">
-          <div class="clinica-leaf">🌿</div>
-          <h3>Respeito ao tempo de cada processo</h3>
-          <p>A análise acontece no ritmo de cada pessoa. Não existe um percurso igual ao outro.</p>
-        </div>
-        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0.2s">
-          <div class="clinica-leaf">🌿</div>
-          <h3>Formação permanente</h3>
-          <p>A prática clínica é sustentada pelo estudo contínuo, pela supervisão e pela própria experiência de análise.</p>
-        </div>
-        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0.3s">
-          <div class="clinica-leaf">🌿</div>
-          <h3>Ética e confidencialidade</h3>
-          <p>Toda análise acontece em um espaço de escuta comprometido com o sigilo, o respeito e a singularidade de cada história.</p>
-        </div>
+      <div class="clinica-topicos-list" id="clinica-topicos-list">
+        ${CLINICA_ITEMS.map((item, i) => `
+          <button class="clinica-topico-item" data-modal="clinica-${i}" aria-haspopup="dialog" data-animate="fade-up" style="transition-delay:${i * 0.08}s">
+            <span class="clinica-topico-check" aria-hidden="true"></span>
+            <div class="clinica-topico-body">
+              <strong class="clinica-topico-titulo">${item.titulo}</strong>
+              <span class="clinica-topico-resumo">${item.resumo}</span>
+            </div>
+            <span class="clinica-topico-arrow">${iconSVG('arrowRight')}</span>
+          </button>
+        `).join('')}
       </div>
     </div>
   `;
   primeiroPasso.after(section);
+
+  // Modais dos princípios
+  CLINICA_ITEMS.forEach((item, i) => {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = `modal-clinica-${i}`;
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', item.titulo);
+    modal.innerHTML = `
+      <div class="modal-box">
+        <button class="modal-close" aria-label="Fechar">${iconSVG('close')}</button>
+        <p class="modal-topico-label">${item.titulo}</p>
+        <p>${item.conteudo}</p>
+        <a href="${whatsappLink()}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:24px;align-self:flex-start;">${iconSVG('whatsapp')} Entrar em contato</a>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('.modal-close').addEventListener('click', () => closeModal(modal));
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
+  });
+
+  document.querySelectorAll('.clinica-topico-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openModal(document.getElementById(`modal-${btn.dataset.modal}`));
+    });
+  });
 }
 
 /* --------------------------------- FAQ --------------------------------- */
