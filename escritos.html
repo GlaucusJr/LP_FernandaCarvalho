@@ -23,13 +23,91 @@
 
   <!-- Editor de texto rico (só carregado no painel admin) -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+
+  <style>
+    /* Estilos dedicados para correção e perfeita harmonia da Modal do Editor */
+    .editor-modal {
+      font-family: 'Sora', sans-serif;
+      color: var(--primary-dark, #0E3340);
+    }
+    .editor-modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--primary-dark, #0E3340);
+      margin-bottom: 24px;
+    }
+    .editor-field {
+      margin-bottom: 20px;
+    }
+    .editor-field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--primary-dark, #0E3340);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .editor-field input[type="text"], 
+    .editor-field input[type="url"] {
+      width: 100%;
+      padding: 11px 16px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(26, 74, 91, 0.16);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.94rem;
+      background: var(--background, #E8F2F6);
+      color: var(--text, #0E3340);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .editor-field input:focus {
+      border-color: var(--primary, #1A4A5B);
+    }
+    
+    /* Customização do Quill dentro da Modal */
+    #quill-editor { 
+      background: var(--background, #E8F2F6); 
+      border-radius: 0 0 10px 10px; 
+      min-height: 280px; 
+    }
+    .ql-toolbar.ql-snow { 
+      border-radius: 10px 10px 0 0 !important; 
+      border-color: rgba(26, 74, 91, 0.16) !important; 
+      background: #FFFFFF; 
+    }
+    .ql-container.ql-snow { 
+      border-radius: 0 0 10px 10px !important; 
+      border-color: rgba(26, 74, 91, 0.16) !important; 
+      font-family: 'Sora', sans-serif !important; 
+      font-size: 0.95rem;
+    }
+
+    /* Ajuste de Botões para alinhar com o padrão do projeto */
+    .btn-primary-custom {
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px;
+      border-radius: 100px; background: var(--primary, #1A4A5B); color: #fff;
+      font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary-custom:hover { background: var(--primary-dark, #0E3340); }
+
+    .btn-outline-custom {
+      display: inline-flex; align-items: center; gap: 6px; padding: 9px 20px;
+      border-radius: 100px; border: 1.5px solid rgba(26, 74, 91, 0.16); color: var(--text, #0E3340);
+      font-size: 0.85rem; font-weight: 600; background: transparent; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline-custom:hover { border-color: var(--primary, #1A4A5B); background: var(--secondary, #C8DCE4); }
+  </style>
 </head>
 <body class="page-escritos">
 
   <a href="#main" class="skip-link">Pular para o conteúdo principal</a>
 
   <div id="loader" aria-hidden="true">
-    <svg class="loader-wave" viewBox="0 0 64 24"><path d="M2 12c6-10 10 10 16 0s10 10 16 0 10 10 16 0" /></svg>
+    <svg class="loader-wave" viewBox="0 0 64 24"><path d="M2 12c6-10 10 10 16 0s10 10 16 0s10 10 16 0" /></svg>
   </div>
 
   <header class="site-header" id="site-header">
@@ -42,7 +120,6 @@
         <a href="escritos.html" class="active">Escritos</a>
       </nav>
       <div class="header-cta">
-        <!-- Sem auth bar: blog é só leitura -->
         <div id="admin-auth-bar"></div>
         <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-mobile"><span></span><span></span><span></span></button>
       </div>
@@ -80,7 +157,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg>
               Você está logada como administradora.
             </span>
-            <button class="btn btn-primary btn-sm" id="btn-new-post">Novo post</button>
+            <button class="btn-primary-custom" id="btn-new-post">Novo post</button>
           </div>
           <div class="posts-feed" id="posts-grid"></div>
         </div>
@@ -106,7 +183,7 @@
       <h2 id="editor-heading">Novo post</h2>
 
       <div class="editor-field">
-        <label for="editor-title">Título</label>
+        <label for="editor-title">Título *</label>
         <input type="text" id="editor-title" placeholder="Título do post">
       </div>
 
@@ -121,19 +198,19 @@
       </div>
 
       <div class="editor-field">
-        <label>Conteúdo</label>
+        <label>Conteúdo *</label>
         <div id="quill-editor"></div>
       </div>
 
       <div class="editor-field editor-toggle">
         <input type="checkbox" id="editor-published" checked>
-        <label for="editor-published" style="margin:0;">Publicar (desmarque para salvar como rascunho)</label>
+        <label for="editor-published" style="margin:0; font-weight: 600; text-transform: none; letter-spacing: normal;">Publicar (desmarque para salvar como rascunho)</label>
       </div>
 
       <div class="editor-actions">
-        <button class="btn btn-outline btn-sm" id="editor-close-btn">Cancelar</button>
+        <button class="btn-outline-custom" id="editor-close-btn">Cancelar</button>
         <div class="editor-actions-right">
-          <button class="btn btn-primary btn-sm" id="editor-save-btn">Salvar</button>
+          <button class="btn-primary-custom" id="editor-save-btn">Salvar</button>
         </div>
       </div>
     </div>
