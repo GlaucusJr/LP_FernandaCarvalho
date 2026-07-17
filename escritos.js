@@ -67,7 +67,17 @@ function renderAdminBar() {
 
   if (isAdmin()) {
     if (bar) bar.classList.add('visible');
-    authBar.innerHTML = `<button class="btn btn-outline btn-sm" id="btn-signout">Sair</button>`;
+    // Adicionado o botão "Painel Admin" ao lado do botão "Sair"
+    authBar.innerHTML = `
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-outline btn-sm" id="btn-go-admin">Painel Admin</button>
+        <button class="btn btn-outline btn-sm" id="btn-signout" style="opacity: 0.8;">Sair</button>
+      </div>
+    `;
+    
+    document.getElementById('btn-go-admin').addEventListener('click', () => {
+      window.location.href = 'admin.html';
+    });
     document.getElementById('btn-signout').addEventListener('click', () => auth.signOut());
   } else {
     if (bar) bar.classList.remove('visible');
