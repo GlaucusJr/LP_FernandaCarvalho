@@ -227,10 +227,104 @@ function renderTestimonials() {
   el.className = 'caminhos-grid';
   el.innerHTML = CAMINHOS_ITEMS.map((item, i) => `
     <div class="caminho-item" data-animate="fade-up" style="transition-delay:${i * 0.08}s">
-      <span class="caminho-check" aria-hidden="true"></span>
+      <span class="caminho-leaf" aria-hidden="true">🌿</span>
       <span class="caminho-texto">${item}</span>
     </div>
   `).join('');
+}
+
+/* --------------------------------- COMO DAR O PRIMEIRO PASSO --------------------------------- */
+function renderPrimeiroPasso() {
+  // Insert after #depoimentos section
+  const depoimentosSection = document.getElementById('depoimentos');
+  if (!depoimentosSection) return;
+
+  const section = document.createElement('section');
+  section.className = 'primeiro-passo-section';
+  section.id = 'primeiro-passo';
+  section.setAttribute('aria-labelledby', 'primeiro-passo-heading');
+  section.innerHTML = `
+    <div class="container">
+      <div class="section-head center">
+        <div class="eyebrow">Início</div>
+        <h2 id="primeiro-passo-heading">Como dar o primeiro passo</h2>
+      </div>
+      <div class="passos-grid">
+        <div class="passo-item" data-animate="fade-up" style="transition-delay:0s">
+          <div class="passo-num">①</div>
+          <div class="passo-body">
+            <h3>Entre em contato</h3>
+            <p>Se desejar iniciar uma análise, entre em contato pelo WhatsApp para esclarecer dúvidas, verificar a disponibilidade de horários e agendar um primeiro encontro.</p>
+          </div>
+        </div>
+        <div class="passo-item" data-animate="fade-up" style="transition-delay:0.1s">
+          <div class="passo-num">②</div>
+          <div class="passo-body">
+            <h3>Primeiro encontro</h3>
+            <p>A primeira sessão é um espaço para que você possa falar sobre o que motivou sua busca e conhecer como o trabalho analítico acontece. Também será um momento para conversarmos sobre suas dúvidas e expectativas em relação ao processo.</p>
+          </div>
+        </div>
+        <div class="passo-item" data-animate="fade-up" style="transition-delay:0.2s">
+          <div class="passo-num">③</div>
+          <div class="passo-body">
+            <h3>Início do processo</h3>
+            <p>Se, ao final desse primeiro encontro, entendermos que a análise é o caminho mais adequado, definiremos juntos a continuidade dos encontros.</p>
+          </div>
+        </div>
+        <div class="passo-item" data-animate="fade-up" style="transition-delay:0.3s">
+          <div class="passo-num">④</div>
+          <div class="passo-body">
+            <h3>Um percurso singular</h3>
+            <p>Cada análise é única. O processo se constrói ao longo do tempo, respeitando a história, o ritmo e a singularidade de cada pessoa.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  depoimentosSection.after(section);
+}
+
+/* --------------------------------- MINHA CLÍNICA --------------------------------- */
+function renderMinhaClinica() {
+  const primeiroPasso = document.getElementById('primeiro-passo');
+  if (!primeiroPasso) return;
+
+  const section = document.createElement('section');
+  section.className = 'minha-clinica-section';
+  section.id = 'minha-clinica';
+  section.setAttribute('aria-labelledby', 'clinica-heading');
+  section.innerHTML = `
+    <div class="container">
+      <div class="section-head center">
+        <div class="eyebrow">Princípios</div>
+        <h2 id="clinica-heading">Minha Clínica</h2>
+        <p>Princípios que orientam meu trabalho</p>
+      </div>
+      <div class="clinica-grid">
+        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0s">
+          <div class="clinica-leaf">🌿</div>
+          <h3>Escuta sem respostas prontas</h3>
+          <p>Cada pessoa chega com uma história singular. Meu trabalho não é oferecer soluções prontas, mas sustentar um espaço em que novos sentidos possam surgir.</p>
+        </div>
+        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0.1s">
+          <div class="clinica-leaf">🌿</div>
+          <h3>Respeito ao tempo de cada processo</h3>
+          <p>A análise acontece no ritmo de cada pessoa. Não existe um percurso igual ao outro.</p>
+        </div>
+        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0.2s">
+          <div class="clinica-leaf">🌿</div>
+          <h3>Formação permanente</h3>
+          <p>A prática clínica é sustentada pelo estudo contínuo, pela supervisão e pela própria experiência de análise.</p>
+        </div>
+        <div class="clinica-card" data-animate="fade-up" style="transition-delay:0.3s">
+          <div class="clinica-leaf">🌿</div>
+          <h3>Ética e confidencialidade</h3>
+          <p>Toda análise acontece em um espaço de escuta comprometido com o sigilo, o respeito e a singularidade de cada história.</p>
+        </div>
+      </div>
+    </div>
+  `;
+  primeiroPasso.after(section);
 }
 
 /* --------------------------------- FAQ --------------------------------- */
@@ -270,12 +364,11 @@ function renderCTAFinal() {
   const el = document.getElementById('cta-final-content');
   if (!el) return;
   el.innerHTML = `
-    <div class="eyebrow">Dar o primeiro passo</div>
-    <h2>Quando estiver pronto, estarei aqui.</h2>
-    <p>O primeiro contato acontece pelo WhatsApp — uma conversa breve para tirar dúvidas e agendar uma entrevista inicial, sem compromisso.</p>
+    <div class="eyebrow">Um Convite</div>
+    <h2>Toda análise começa com um primeiro encontro.</h2>
+    <p>Se você acredita que este pode ser o seu momento, será um prazer caminhar ao seu lado nesse início de percurso.</p>
     <div class="cta-final-actions">
-      <a class="btn btn-primary" href="${whatsappLink()}" target="_blank" rel="noopener">${iconSVG('whatsapp')} Conversar pelo WhatsApp</a>
-      <a class="btn btn-outline" href="escritos.html" style="color:#fff;border-color:rgba(255,255,255,0.4);">${iconSVG('escritos')} Ver os Escritos</a>
+      <a class="btn btn-primary" href="${whatsappLink()}" target="_blank" rel="noopener">${iconSVG('whatsapp')} Agendar um primeiro encontro</a>
     </div>
   `;
 }
@@ -388,6 +481,8 @@ function init() {
   renderAbout();
   renderQuandoFazSentido();
   renderTestimonials();
+  renderPrimeiroPasso();
+  renderMinhaClinica();
   renderFAQ();
   renderCTAFinal();
   renderFooter();
