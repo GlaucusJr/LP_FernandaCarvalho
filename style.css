@@ -428,90 +428,170 @@ body.modal-open { overflow: hidden; }
   line-height: 1.55;
 }
 
-/* -------------------------------- COMO DAR O PRIMEIRO PASSO — TRILHA -------------------------------- */
-.primeiro-passo-section { background: var(--surface); }
-.trilha-passos {
+/* -------------------------------- COMO DAR O PRIMEIRO PASSO — TRILHA VERTICAL -------------------------------- */
+.primeiro-passo-section {
+  background: var(--primary-dark);
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0 32px;
-  max-width: 1000px;
+  overflow: hidden;
+}
+.primeiro-passo-section .section-head h2 { color: var(--white); }
+.primeiro-passo-section .eyebrow { color: rgba(255,255,255,0.7); }
+.primeiro-passo-section .eyebrow::before { background: var(--secondary); }
+
+/* Container vertical da trilha */
+.trilha-vertical {
+  position: relative;
+  max-width: 860px;
   margin: 0 auto;
-  padding-top: 20px;
-}
-/* Linha horizontal de fundo */
-.trilha-connector {
-  position: absolute;
-  top: 46px; /* centro dos números */
-  left: calc(12.5% + 24px);
-  right: calc(12.5% + 24px);
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--secondary) 100%);
-  opacity: 0.45;
-  z-index: 0;
-}
-.trilha-item {
   display: flex;
   flex-direction: column;
+  gap: 0;
+}
+
+/* Linha vertical central */
+.trilha-vertical-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  background: linear-gradient(180deg,
+    var(--secondary) 0%,
+    rgba(200, 220, 228, 0.4) 100%
+  );
+  z-index: 0;
+  border-radius: 2px;
+}
+
+/* Cada linha da trilha: 3 colunas [conteúdo | número | conteúdo] */
+.trilha-vertical-item {
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
   align-items: center;
-  text-align: center;
+  gap: 0 24px;
   position: relative;
   z-index: 1;
-  gap: 20px;
+  padding: 28px 0;
 }
-.trilha-num {
-  width: 52px;
-  height: 52px;
+
+/* Coluna central: número */
+.trilha-v-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.trilha-v-num {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: var(--primary);
-  color: var(--white);
+  background: var(--secondary);
+  color: var(--primary-dark);
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.9rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--primary) 35%, transparent);
+  box-shadow:
+    0 0 0 6px rgba(200, 220, 228, 0.18),
+    0 8px 28px rgba(14, 51, 64, 0.35);
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  letter-spacing: -0.02em;
 }
-.trilha-item:hover .trilha-num {
-  transform: scale(1.1);
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--primary) 50%, transparent);
+
+.trilha-vertical-item:hover .trilha-v-num {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 0 10px rgba(200, 220, 228, 0.22),
+    0 12px 36px rgba(14, 51, 64, 0.45);
 }
-.trilha-body {
-  background: var(--background);
-  border: 1.5px solid var(--border-soft);
+
+/* Conteúdo (card de texto) */
+.trilha-v-body {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(200, 220, 228, 0.2);
   border-radius: var(--radius-md);
-  padding: 22px 18px;
-  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
-  width: 100%;
+  padding: 24px 22px;
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.3s var(--ease);
 }
-.trilha-item:hover .trilha-body {
-  border-color: var(--accent);
-  box-shadow: var(--shadow-soft);
-  transform: translateY(-4px);
+.trilha-vertical-item:hover .trilha-v-body {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: var(--secondary);
+  transform: translateY(-3px);
 }
-.trilha-body h3 {
+.trilha-v-body h3 {
   font-family: var(--font-body);
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--primary-dark);
+  color: var(--white);
   margin-bottom: 8px;
 }
-.trilha-body p {
-  font-size: 0.88rem;
+.trilha-v-body p {
+  font-size: 0.9rem;
   line-height: 1.65;
-  opacity: 0.82;
+  color: rgba(255, 255, 255, 0.72);
+  opacity: 1;
 }
-@media (max-width: 860px) {
-  .trilha-passos { grid-template-columns: repeat(2, 1fr); gap: 24px; padding-top: 0; }
-  .trilha-connector { display: none; }
-  .trilha-item { align-items: flex-start; text-align: left; flex-direction: row; gap: 16px; }
-  .trilha-body { flex: 1; }
+
+/* Item da esquerda: texto à esquerda, vazio à direita */
+.trilha-v-left .trilha-v-body { text-align: right; }
+
+/* Item da direita: vazio à esquerda, texto à direita */
+.trilha-v-right .trilha-v-body { text-align: left; }
+
+/* Célula vazia (lado oposto ao texto) */
+.trilha-v-empty { /* apenas espaçamento */ }
+
+/* Linha de conexão horizontal (do número ao card) — pseudo-elemento */
+.trilha-v-left .trilha-v-body {
+  position: relative;
 }
-@media (max-width: 500px) {
-  .trilha-passos { grid-template-columns: 1fr; }
+.trilha-v-left .trilha-v-body::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -24px;
+  width: 24px;
+  height: 1.5px;
+  background: rgba(200, 220, 228, 0.35);
+}
+.trilha-v-right .trilha-v-body {
+  position: relative;
+}
+.trilha-v-right .trilha-v-body::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -24px;
+  width: 24px;
+  height: 1.5px;
+  background: rgba(200, 220, 228, 0.35);
+}
+
+/* ---- Responsivo ---- */
+@media (max-width: 680px) {
+  .trilha-vertical-spine { left: 36px; }
+  .trilha-vertical-item {
+    grid-template-columns: 72px 1fr;
+    grid-template-rows: auto;
+    gap: 0 18px;
+    padding: 20px 0;
+  }
+  /* Todos os itens: número à esquerda, texto à direita */
+  .trilha-v-left .trilha-v-body,
+  .trilha-v-right .trilha-v-body { text-align: left; }
+  .trilha-v-left .trilha-v-body::after,
+  .trilha-v-right .trilha-v-body::before { display: none; }
+  .trilha-v-empty { display: none; }
+  .trilha-v-left .trilha-v-center { grid-column: 1; grid-row: 1; }
+  .trilha-v-left .trilha-v-body  { grid-column: 2; grid-row: 1; }
+  .trilha-v-right .trilha-v-center { grid-column: 1; grid-row: 1; }
+  .trilha-v-right .trilha-v-body  { grid-column: 2; grid-row: 1; }
+  .trilha-v-num { width: 60px; height: 60px; font-size: 1.5rem; }
 }
 
 /* -------------------------------- MINHA CLÍNICA — TÓPICOS CLICÁVEIS -------------------------------- */
