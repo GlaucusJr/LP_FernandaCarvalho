@@ -15,17 +15,13 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: none; background: none; }
 ul { list-style: none; }
 
-/* Escritos page: footer always at bottom (classe no body, sem depender de :has()) */
-body.page-escritos {
-  min-height: 100vh;
+/* Escritos page: footer always at bottom */
+body:has(.escritos-footer) {
   display: flex;
   flex-direction: column;
 }
-body.page-escritos #main {
-  flex: 1 0 auto;
-}
-body.page-escritos .escritos-footer {
-  flex-shrink: 0;
+body:has(.escritos-footer) #main {
+  flex: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -34,20 +30,20 @@ body.page-escritos .escritos-footer {
 
 /* ------------------------------ DESIGN TOKENS ----------------------------- */
 :root {
-  --primary: #1F4E5F;
-  --primary-dark: #173D4A;
-  --secondary: #DCECEF;
-  --accent: #6FA8B5;
-  --accent-dark: #5B97A4;
-  --background: #FAFCFC;
-  --text: #2C3A40;
-  --gray: #66767D;
+  --primary: #1A4A5B;
+  --primary-dark: #0E3340;
+  --secondary: #C8DCE4;
+  --accent: #1A4A5B;
+  --accent-dark: #0E3340;
+  --background: #E8F2F6;
+  --text: #0E3340;
+  --gray: #4A6572;
 
   --white: #FFFFFF;
   --surface: #FFFFFF;
-  --border-soft: rgba(31, 78, 95, 0.12);
-  --shadow-soft: 0 12px 40px rgba(31, 78, 95, 0.10);
-  --shadow-med: 0 22px 60px rgba(31, 78, 95, 0.16);
+  --border-soft: rgba(26, 74, 91, 0.16);
+  --shadow-soft: 0 12px 40px rgba(14, 51, 64, 0.12);
+  --shadow-med: 0 22px 60px rgba(14, 51, 64, 0.18);
 
   /* Tipografia — pareamento distinto dos Templates 1 e 2 */
   --font-display: 'Cormorant Garamond', serif;
@@ -146,8 +142,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* --------------------------------- HEADER ---------------------------------- */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: rgba(242, 249, 248, 0.88); /* fallback para navegadores sem color-mix() */
-  background: color-mix(in srgb, var(--background) 88%, transparent);
+  background: rgba(232, 242, 246, 0.93);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
@@ -244,7 +239,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* --------------------------------- ABOUT ------------------------------------ */
 .about { background: var(--surface); }
 .about-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
-/* DOM traz a foto primeiro; invertendo com order para foto ficar à direita */
 .about-photo { order: 2; position: relative; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); aspect-ratio: 1/1; max-width: 440px; margin-left: auto; }
 .about-text { order: 1; }
 .about-photo img { width: 100%; height: 100%; object-fit: cover; }
@@ -273,7 +267,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   position: fixed; inset: 0; z-index: 2000;
   background: rgba(23, 61, 74, 0.55);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center; padding: 24px;
+  display: flex; align-items: flex-start; justify-content: center; padding: 40px 24px;
+  overflow-y: auto;
   opacity: 0; visibility: hidden;
   transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
 }
@@ -301,6 +296,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .modal-box p { font-size: 1rem; line-height: 1.75; opacity: 0.88; }
 .modal-topico-label { font-size: 0.92rem; font-weight: 700; color: var(--primary); padding: 10px 14px; background: var(--secondary); border-radius: var(--radius-sm); opacity: 1 !important; }
 body.modal-open { overflow: hidden; }
+
+/* ---- Modal rich content (listas, parágrafos) ---- */
+.modal-box-rich { max-height: none; overflow-y: visible; }
+.modal-rich-content p { margin-bottom: 12px; font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+.modal-rich-content p:last-child { margin-bottom: 0; }
+.modal-rich-content strong { color: var(--primary-dark); font-weight: 700; display: block; margin: 16px 0 6px; }
+.modal-rich-content ul { padding-left: 18px; margin-bottom: 12px; }
+.modal-rich-content ul li { font-size: 0.92rem; line-height: 1.65; color: var(--text); margin-bottom: 4px; }
 
 /* ---- Seção "Quando a análise faz sentido" ---- */
 .quando-section { background: var(--primary-dark); color: var(--white); position: relative; overflow: hidden; }

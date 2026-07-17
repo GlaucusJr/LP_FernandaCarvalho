@@ -67,7 +67,6 @@ function renderHero() {
 
   // Texto: DIREITA — dois headlines + subheadline
   document.getElementById('hero-content').innerHTML = `
-    <div class="hero-badge" data-animate="fade-up"><span class="dot" aria-hidden="true"></span> Vagas abertas para novos analisandos</div>
     <h1 class="hero-h1-main" data-animate="fade-up">${CONFIG.headline1}</h1>
     <h2 class="hero-h1-sub" data-animate="fade-up">${CONFIG.headline2}</h2>
     <p class="sub" data-animate="fade-up">${CONFIG.subheadline}</p>
@@ -79,7 +78,6 @@ function renderHero() {
       <span class="seal">${iconSVG('check')} Atendimento Online</span>
       <span class="seal">${iconSVG('check')} Atendimento Presencial</span>
       <span class="seal">${iconSVG('sigilo')} Sigilo Profissional</span>
-      <span class="seal">${iconSVG('check')} ${CONFIG.crp}</span>
     </div>
   `;
 }
@@ -117,11 +115,11 @@ function renderAbout() {
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-label', card.titulo);
     modal.innerHTML = `
-      <div class="modal-box">
+      <div class="modal-box modal-box-rich">
         <button class="modal-close" aria-label="Fechar">${iconSVG('close')}</button>
         <div class="modal-icon">${iconSVG(card.icone)}</div>
         <h3>${card.titulo}</h3>
-        <p>${card.conteudo}</p>
+        <div class="modal-rich-content">${card.conteudo}</div>
         ${card.link ? `<a href="${card.link}" class="btn btn-primary" style="margin-top:20px;align-self:flex-start;">${iconSVG('arrowRight')} Ver os Escritos</a>` : ''}
       </div>
     `;
@@ -200,24 +198,38 @@ function renderQuandoFazSentido() {
   });
 }
 
-/* --------------------------------- DEPOIMENTOS --------------------------------- */
+/* --------------------------------- CAMINHOS PARA A ANÁLISE --------------------------------- */
+const CAMINHOS_ITEMS = [
+  "Quando a ansiedade parece ocupar espaço demais",
+  "Quando uma perda muda a forma de viver",
+  "Quando os relacionamentos se tornam fonte de sofrimento",
+  "Quando algumas histórias insistem em se repetir",
+  "Quando sentimos que estamos vivendo mais para os outros do que para nós mesmos",
+  "Quando uma pergunta começa a insistir: O que eu desejo?",
+];
+
 function renderTestimonials() {
+  const section = document.getElementById('depoimentos');
+  if (!section) return;
+
+  // Rewrite the section heading
+  const headEl = section.querySelector('.section-head');
+  if (headEl) {
+    headEl.innerHTML = `
+      <div class="eyebrow">Caminhos para a Análise</div>
+      <h2>Em que momentos a análise pode fazer sentido?</h2>
+    `;
+  }
+
   const el = document.getElementById('testi-track');
   if (!el) return;
-  el.innerHTML = DEPOIMENTOS.map((t, i) => `
-    <article class="testi-card" data-animate="fade-up" style="transition-delay:${i * 0.1}s">
-      <div class="testi-stars" aria-label="${t.estrelas} estrelas">
-        ${Array(t.estrelas).fill(iconSVG('star')).join('')}
-      </div>
-      <p class="testi-text">"${t.texto}"</p>
-      <div class="testi-author">
-        <div class="testi-avatar" aria-hidden="true">${t.nome.split(' ').map(p => p[0]).slice(0,2).join('')}</div>
-        <div>
-          <div class="testi-name">${t.nome}</div>
-          <div class="testi-age">${t.idade} anos</div>
-        </div>
-      </div>
-    </article>
+
+  el.className = 'caminhos-grid';
+  el.innerHTML = CAMINHOS_ITEMS.map((item, i) => `
+    <div class="caminho-item" data-animate="fade-up" style="transition-delay:${i * 0.08}s">
+      <span class="caminho-check" aria-hidden="true"></span>
+      <span class="caminho-texto">${item}</span>
+    </div>
   `).join('');
 }
 
@@ -278,7 +290,7 @@ function renderFooter() {
         <a href="#top" class="logo" aria-label="Página inicial">
           <img src="${CONFIG.logoSemFundo}" alt="${CONFIG.nome}" class="logo-img logo-img-footer" onerror="this.style.display='none';this.nextSibling.style.display='inline'"><span style="display:none;">${CONFIG.nome}</span>
         </a>
-        <p>${CONFIG.especialidade} — ${CONFIG.crp}</p>
+        <p>${CONFIG.especialidade}</p>
         <div class="footer-social">
           ${CONFIG.instagram ? `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" aria-label="Instagram">${iconSVG('instagram')}</a>` : ''}
           <a href="${whatsappLink()}" target="_blank" rel="noopener" aria-label="WhatsApp">${iconSVG('whatsapp')}</a>
@@ -307,7 +319,7 @@ function renderFooter() {
       </div>
     </div>
     <div class="footer-bottom">
-      <span>&copy; ${new Date().getFullYear()} ${CONFIG.nome} — ${CONFIG.crp}. Todos os direitos reservados.</span>
+      <span>&copy; ${new Date().getFullYear()} ${CONFIG.nome}. Todos os direitos reservados.</span>
       <span><a href="#">Política de Privacidade</a></span>
     </div>
   `;

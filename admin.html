@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin — Escritos</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    :root {
+      --primary:      #1A4A5B;
+      --primary-dark: #0E3340;
+      --secondary:    #C8DCE4;
+      --accent:       #1A4A5B;
+      --accent-dark:  #0E3340;
+      --bg:           #E8F2F6;
+      --surface:      #FFFFFF;
+      --text:         #0E3340;
+      --gray:         #4A6572;
+      --border:       rgba(26, 74, 91, 0.16);
+      --danger:       #B5453A;
+      --danger-bg:    #FDECEA;
+      --shadow:       0 8px 32px rgba(14, 51, 64, 0.12);
+      --radius:       14px;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Sora', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- LOGIN SCREEN ---- */
+    #login-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 32px;
+    }
+
+    /* Logo no topo da tela de login */
+    .login-site-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-site-logo img {
+      height: 52px;
+      width: auto;
+    }
+    .login-site-logo span {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .login-card {
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 48px 44px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .login-card h1 {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+    .login-card .login-sub {
+      font-size: 0.88rem;
+      color: var(--gray);
+      margin-bottom: 32px;
+      opacity: 1;
+    }
+
+    /* Form fields */
+    .login-field { margin-bottom: 14px; text-align: left; }
+    .login-field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+    .login-field input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      font-family: var(--font-body);
+      font-size: 0.94rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .login-field input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .login-field input::placeholder { color: var(--gray); opacity: 0.7; }
+
+    .btn-login {
+      width: 100%;
+      padding: 13px 24px;
+      border-radius: 100px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-login:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .login-error {
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--danger);
+      background: var(--danger-bg);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: none;
+      text-align: left;
+    }
+    .login-error.visible { display: block; }
+
+    .login-back {
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s;
+    }
+    .login-back:hover { color: var(--primary-dark); }
+    .login-back svg { width: 14px; height: 14px; }
+
+    /* ---- APP SHELL ---- */
+    #app { flex: 1; display: none; flex-direction: column; }
+    #app.visible { display: flex; }
+
+    /* ---- TOP BAR ---- */
+    .topbar {
+      background: var(--primary-dark);
+      color: #fff;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      flex-shrink: 0;
+      gap: 16px;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .topbar-logo img { height: 34px; width: auto; filter: brightness(0) invert(1); }
+    .topbar-logo svg { width: 22px; height: 22px; opacity: 0.8; }
+    .topbar-badge {
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(255,255,255,0.15);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-user { font-size: 0.85rem; color: rgba(255,255,255,0.75); display: none; }
+    @media (min-width: 600px) { .topbar-user { display: block; } }
+    .btn-signout {
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.83rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-signout:hover { background: rgba(255,255,255,0.12); }
+    .btn-view-blog {
+      padding: 7px 16px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.83rem;
+      font-weight: 600;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-view-blog:hover { background: rgba(255,255,255,0.2); }
+    .btn-view-blog svg { width: 14px; height: 14px; }
+
+    /* ---- MAIN LAYOUT ---- */
+    .admin-layout { flex: 1; display: flex; overflow: hidden; }
+
+    /* ---- SIDEBAR ---- */
+    .sidebar {
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sidebar-label {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--gray); padding: 0 20px; margin: 16px 0 8px;
+    }
+    .sidebar-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 20px;
+      font-size: 0.88rem; font-weight: 500; color: var(--text);
+      border-left: 3px solid transparent; width: 100%; text-align: left;
+      transition: background 0.15s;
+    }
+    .sidebar-btn svg { width: 17px; height: 17px; color: var(--gray); flex-shrink: 0; }
+    .sidebar-btn:hover { background: var(--bg); }
+    .sidebar-btn.active { background: var(--secondary); color: var(--primary-dark); font-weight: 600; border-left-color: var(--primary); }
+    .sidebar-btn.active svg { color: var(--primary); }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 0; }
+    .sidebar-counter {
+      margin-left: auto; font-size: 0.72rem; font-weight: 700;
+      background: var(--secondary); color: var(--primary-dark);
+      padding: 2px 8px; border-radius: 100px;
+    }
+
+    /* ---- CONTENT AREA ---- */
+    .admin-content { flex: 1; overflow-y: auto; padding: 32px; }
+
+    /* ---- VIEWS ---- */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ---- POSTS LIST ---- */
+    .posts-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .posts-header h2 {
+      font-family: var(--font-display); font-size: 1.8rem;
+      color: var(--primary-dark); font-weight: 600;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px;
+      border-radius: 100px; background: var(--primary); color: #fff;
+      font-size: 0.88rem; font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary svg { width: 16px; height: 16px; }
+    .btn-outline-sm {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+      border-radius: 100px; border: 1.5px solid var(--border); color: var(--text);
+      font-size: 0.82rem; font-weight: 600; transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline-sm:hover { border-color: var(--primary); background: var(--secondary); }
+    .btn-outline-sm svg { width: 14px; height: 14px; }
+    .btn-danger-sm {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+      border-radius: 100px; border: 1.5px solid transparent;
+      color: var(--danger); font-size: 0.82rem; font-weight: 600;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-danger-sm:hover { background: var(--danger-bg); border-color: var(--danger); }
+    .btn-danger-sm svg { width: 14px; height: 14px; }
+
+    .posts-table { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; }
+    .posts-table-header {
+      display: grid; grid-template-columns: 1fr 120px 130px 120px; gap: 0;
+      padding: 12px 20px; background: var(--bg); border-bottom: 1px solid var(--border);
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--gray);
+    }
+    .post-row {
+      display: grid; grid-template-columns: 1fr 120px 130px 120px; gap: 0;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+      align-items: center; transition: background 0.15s;
+    }
+    .post-row:last-child { border-bottom: none; }
+    .post-row:hover { background: var(--bg); }
+    .post-row-title { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .post-row-cover { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: var(--secondary); flex-shrink: 0; }
+    .post-row-cover-placeholder {
+      width: 44px; height: 44px; border-radius: 8px;
+      background: var(--secondary); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .post-row-cover-placeholder svg { width: 20px; height: 20px; color: var(--gray); }
+    .post-row-name { font-weight: 600; font-size: 0.92rem; color: var(--primary-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .post-row-excerpt { font-size: 0.78rem; color: var(--gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.72rem; font-weight: 700; }
+    .badge-published { background: #E0EEF4; color: #1A4A5B; }
+    .badge-draft { background: #F3F0EC; color: #8A7560; }
+    .post-row-date { font-size: 0.82rem; color: var(--gray); }
+    .post-row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+    .empty-state-table { text-align: center; padding: 64px 20px; color: var(--gray); }
+    .empty-state-table svg { width: 48px; height: 48px; margin: 0 auto 16px; opacity: 0.4; }
+    .empty-state-table p { font-size: 0.94rem; }
+
+    /* ---- EDITOR VIEW ---- */
+    .editor-view-header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .editor-view-header h2 {
+      font-family: var(--font-display); font-size: 1.8rem;
+      color: var(--primary-dark); font-weight: 600; flex: 1;
+    }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 600; color: var(--gray); transition: color 0.15s;
+    }
+    .btn-back:hover { color: var(--primary-dark); }
+    .btn-back svg { width: 16px; height: 16px; }
+    .editor-save-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    .editor-card {
+      background: var(--surface); border-radius: var(--radius);
+      border: 1px solid var(--border); padding: 28px; margin-bottom: 20px;
+    }
+    .editor-card h3 {
+      font-family: var(--font-display); font-size: 1.1rem;
+      color: var(--primary-dark); font-weight: 600; margin-bottom: 20px;
+    }
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block; font-size: 0.82rem; font-weight: 700;
+      color: var(--primary-dark); margin-bottom: 7px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .field input[type="text"], .field input[type="url"] {
+      width: 100%; padding: 11px 16px; border-radius: 10px;
+      border: 1.5px solid var(--border); font-family: var(--font-body);
+      font-size: 0.94rem; background: var(--bg); color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .field input:focus { outline: none; border-color: var(--primary); }
+    .field-hint { font-size: 0.78rem; color: var(--gray); margin-top: 5px; }
+    .cover-preview { margin-top: 10px; height: 120px; border-radius: 10px; overflow: hidden; background: var(--secondary); display: none; }
+    .cover-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-preview.visible { display: block; }
+
+    #quill-editor { background: var(--bg); border-radius: 0 0 10px 10px; min-height: 340px; }
+    .ql-toolbar.ql-snow { border-radius: 10px 10px 0 0 !important; border-color: var(--border) !important; background: var(--surface); }
+    .ql-container.ql-snow { border-radius: 0 0 10px 10px !important; border-color: var(--border) !important; font-family: var(--font-body) !important; }
+
+    .publish-toggle { display: flex; align-items: center; gap: 12px; padding: 16px 0 0; }
+    .toggle-switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: var(--border);
+      border-radius: 100px; transition: background 0.2s; cursor: pointer;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 18px; height: 18px;
+      border-radius: 50%; background: #fff; top: 3px; left: 3px;
+      transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+    .toggle-label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    .toggle-desc { font-size: 0.78rem; color: var(--gray); }
+
+    /* ---- TOAST ---- */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--primary-dark); color: #fff; padding: 14px 26px;
+      border-radius: 100px; font-size: 0.9rem; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(14,51,64,0.22); z-index: 9999;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+      white-space: nowrap;
+    }
+    .toast.visible { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+    /* ---- DELETE MODAL ---- */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(14, 51, 64, 0.45);
+      z-index: 2000; display: none; align-items: center;
+      justify-content: center; padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface); border-radius: 20px; padding: 36px;
+      max-width: 400px; width: 100%;
+      box-shadow: 0 24px 64px rgba(14,51,64,0.2); text-align: center;
+    }
+    .modal-box .modal-icon {
+      width: 56px; height: 56px; background: var(--danger-bg); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+    }
+    .modal-box .modal-icon svg { width: 26px; height: 26px; color: var(--danger); }
+    .modal-box h3 { font-family: var(--font-display); font-size: 1.5rem; color: var(--primary-dark); margin-bottom: 10px; }
+    .modal-box p { font-size: 0.9rem; color: var(--gray); margin-bottom: 28px; opacity: 1; }
+    .modal-actions { display: flex; gap: 12px; justify-content: center; }
+    .btn-cancel { padding: 10px 22px; border-radius: 100px; border: 1.5px solid var(--border); font-size: 0.88rem; font-weight: 600; color: var(--text); transition: background 0.15s; }
+    .btn-cancel:hover { background: var(--bg); }
+    .btn-delete-confirm { padding: 10px 22px; border-radius: 100px; background: var(--danger); color: #fff; font-size: 0.88rem; font-weight: 600; transition: opacity 0.15s; }
+    .btn-delete-confirm:hover { opacity: 0.85; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .admin-content { padding: 20px; }
+      .posts-table-header, .post-row { grid-template-columns: 1fr auto; }
+      .posts-table-header .col-status, .posts-table-header .col-date,
+      .post-row-status, .post-row-date { display: none; }
+      .topbar { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div id="login-screen">
+
+    <!-- Logo + link para a landing page -->
+    <a href="index.html" class="login-site-logo" id="login-logo-link" aria-label="Voltar para o site">
+      <img src="assets/logo_semfundo.png" alt="" id="login-logo-img"
+           onerror="this.style.display='none'; document.getElementById('login-logo-text').style.display='inline'">
+      <span id="login-logo-text" style="display:none;">Dra. Ana Paula Mello</span>
+    </a>
+
+    <div class="login-card">
+      <h1>Área Admin</h1>
+      <p class="login-sub">Entre com suas credenciais para gerenciar os Escritos.</p>
+
+      <div class="login-field">
+        <label for="login-email">E-mail</label>
+        <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="login-field">
+        <label for="login-password">Senha</label>
+        <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+
+      <button class="btn-login" id="btn-login">
+        Entrar
+      </button>
+
+      <p class="login-error" id="login-error"></p>
+
+      <a href="index.html" class="login-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar para o site
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ APP ============ -->
+  <div id="app">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-logo" id="topbar-logo-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          Escritos
+        </div>
+        <span class="topbar-badge">Admin</span>
+      </div>
+      <div class="topbar-right">
+        <a href="escritos.html" target="_blank" class="btn-view-blog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Ver blog
+        </a>
+        <button class="btn-signout" id="btn-signout">Sair</button>
+      </div>
+    </div>
+
+    <div class="admin-layout">
+
+      <!-- SIDEBAR -->
+      <nav class="sidebar">
+        <div class="sidebar-label">Conteúdo</div>
+        <button class="sidebar-btn active" data-view="posts" id="nav-posts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Todos os escritos
+          <span class="sidebar-counter" id="counter-all">0</span>
+        </button>
+        <button class="sidebar-btn" id="nav-published">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+          Publicados
+          <span class="sidebar-counter" id="counter-published">0</span>
+        </button>
+        <button class="sidebar-btn" id="nav-drafts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>
+          Rascunhos
+          <span class="sidebar-counter" id="counter-drafts">0</span>
+        </button>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-label">Ações</div>
+        <button class="sidebar-btn" id="nav-new-post">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Novo escrito
+        </button>
+      </nav>
+
+      <!-- CONTENT -->
+      <main class="admin-content">
+
+        <!-- POSTS LIST VIEW -->
+        <div class="view active" id="view-posts">
+          <div class="posts-header">
+            <h2 id="posts-view-title">Todos os escritos</h2>
+            <button class="btn-primary" id="btn-new-post-main">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo escrito
+            </button>
+          </div>
+          <div class="posts-table">
+            <div class="posts-table-header">
+              <div>Título</div>
+              <div class="col-status">Status</div>
+              <div class="col-date">Data</div>
+              <div style="text-align:right;">Ações</div>
+            </div>
+            <div id="posts-rows">
+              <div class="empty-state-table">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <p>Carregando escritos…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDITOR VIEW -->
+        <div class="view" id="view-editor">
+          <div class="editor-view-header">
+            <button class="btn-back" id="btn-back-list">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Voltar
+            </button>
+            <h2 id="editor-heading">Novo escrito</h2>
+            <div class="editor-save-bar">
+              <button class="btn-outline-sm" id="btn-save-draft">Salvar rascunho</button>
+              <button class="btn-primary" id="btn-publish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                Publicar
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <h3>Conteúdo</h3>
+            <div class="field">
+              <label for="ed-title">Título *</label>
+              <input type="text" id="ed-title" placeholder="Título do escrito">
+            </div>
+            <div class="field">
+              <label for="ed-excerpt">Resumo</label>
+              <input type="text" id="ed-excerpt" placeholder="Uma ou duas frases que apresentam o escrito">
+            </div>
+            <div class="field">
+              <label>Conteúdo *</label>
+              <div id="quill-editor"></div>
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <h3>Imagem de capa</h3>
+            <div class="field">
+              <label for="ed-cover">URL da imagem</label>
+              <input type="url" id="ed-cover" placeholder="https://...">
+              <p class="field-hint">Recomendado: 1200×630px ou proporção 16:10.</p>
+            </div>
+            <div class="cover-preview" id="cover-preview">
+              <img id="cover-preview-img" src="" alt="Prévia da capa">
+            </div>
+          </div>
+
+          <div class="editor-card">
+            <h3>Publicação</h3>
+            <div class="publish-toggle">
+              <label class="toggle-switch">
+                <input type="checkbox" id="ed-published" checked>
+                <span class="toggle-slider"></span>
+              </label>
+              <div>
+                <div class="toggle-label" id="toggle-label-text">Publicado</div>
+                <div class="toggle-desc">Visível para todos os visitantes do blog.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- DELETE MODAL -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      </div>
+      <h3>Excluir escrito?</h3>
+      <p>Esta ação não pode ser desfeita. O escrito será removido permanentemente.</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" id="delete-cancel">Cancelar</button>
+        <button class="btn-delete-confirm" id="delete-confirm">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+  <script src="config.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <script>
+  firebase.initializeApp(FIREBASE_CONFIG);
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+
+  let currentUser   = null;
+  let allPosts      = [];
+  let editingPostId = null;
+  let deleteTarget  = null;
+  let quill         = null;
+  let currentFilter = 'all';
+
+  /* ---- LOGO na tela de login ---- */
+  (function applyLoginLogo() {
+    const img  = document.getElementById('login-logo-img');
+    const text = document.getElementById('login-logo-text');
+    if (window.CONFIG) {
+      if (CONFIG.logoSemFundo) { img.src = CONFIG.logoSemFundo; }
+      else { img.style.display = 'none'; text.textContent = CONFIG.nome; text.style.display = 'inline'; }
+    }
+  })();
+
+  /* ---- TOAST ---- */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => t.classList.remove('visible'), 3200);
+  }
+
+  function fmtDate(ts) {
+    if (!ts || !ts.toDate) return '—';
+    return ts.toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  function escapeHTML(str) {
+    const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML;
+  }
+
+  /* ---- AUTH (e-mail + senha) ---- */
+  const loginBtn = document.getElementById('btn-login');
+  const errEl    = document.getElementById('login-error');
+
+  function setLoginError(msg) {
+    errEl.textContent = msg;
+    errEl.classList.toggle('visible', !!msg);
+  }
+
+  loginBtn.addEventListener('click', doLogin);
+  document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+  function doLogin() {
+    const email    = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) { setLoginError('Preencha e-mail e senha.'); return; }
+    setLoginError('');
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Entrando…';
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(err => {
+        const msgs = {
+          'auth/user-not-found':   'E-mail não encontrado.',
+          'auth/wrong-password':   'Senha incorreta.',
+          'auth/invalid-email':    'E-mail inválido.',
+          'auth/invalid-credential': 'E-mail ou senha incorretos.',
+          'auth/too-many-requests':'Muitas tentativas. Aguarde um momento.',
+        };
+        setLoginError(msgs[err.code] || 'Não foi possível entrar. Tente novamente.');
+      })
+      .finally(() => {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Entrar';
+      });
+  }
+
+  document.getElementById('btn-signout').addEventListener('click', () => auth.signOut());
+
+  auth.onAuthStateChanged(user => {
+    if (user && user.uid === ADMIN_UID) {
+      currentUser = user;
+      setLoginError('');
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').classList.add('visible');
+      loadPosts();
+    } else if (user) {
+      auth.signOut();
+      setLoginError('Esta conta não tem acesso ao painel.');
+    } else {
+      currentUser = null;
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('app').classList.remove('visible');
+    }
+  });
+
+  /* ---- QUILL ---- */
+  function initQuill() {
+    if (quill) return;
+    quill = new Quill('#quill-editor', {
+      theme: 'snow',
+      placeholder: 'Escreva aqui…',
+      modules: {
+        toolbar: {
+          container: [[{ header: [2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], ['blockquote'], ['link', 'image'], [{ list: 'ordered' }, { list: 'bullet' }], ['clean']],
+          handlers: { image: () => { const url = prompt('Cole a URL da imagem:'); if (url) quill.insertEmbed(quill.getSelection()?.index || 0, 'image', url); } },
+        },
+      },
+    });
+  }
+
+  /* ---- LOAD POSTS ---- */
+  function loadPosts() {
+    db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(snap => {
+      allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const pub   = allPosts.filter(p => p.published).length;
+      const draft = allPosts.filter(p => !p.published).length;
+      document.getElementById('counter-all').textContent      = allPosts.length;
+      document.getElementById('counter-published').textContent = pub;
+      document.getElementById('counter-drafts').textContent   = draft;
+      renderPostsTable(currentFilter);
+    }, () => showToast('Não foi possível carregar os escritos.'));
+  }
+
+  function renderPostsTable(filter = 'all') {
+    currentFilter = filter;
+    const posts = filter === 'published' ? allPosts.filter(p => p.published)
+                : filter === 'draft'     ? allPosts.filter(p => !p.published)
+                : allPosts;
+    const container = document.getElementById('posts-rows');
+    if (posts.length === 0) {
+      container.innerHTML = `<div class="empty-state-table"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><p>${filter === 'all' ? 'Nenhum escrito ainda.' : 'Nenhum escrito nesta categoria.'}</p></div>`;
+      return;
+    }
+    container.innerHTML = posts.map(post => `
+      <div class="post-row">
+        <div class="post-row-title">
+          ${post.coverImage ? `<img class="post-row-cover" src="${escapeHTML(post.coverImage)}" alt="" onerror="this.style.display='none'">` : `<div class="post-row-cover-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`}
+          <div><div class="post-row-name">${escapeHTML(post.title || 'Sem título')}</div>${post.excerpt ? `<div class="post-row-excerpt">${escapeHTML(post.excerpt)}</div>` : ''}</div>
+        </div>
+        <div class="post-row-status"><span class="badge ${post.published ? 'badge-published' : 'badge-draft'}">${post.published ? '● Publicado' : '○ Rascunho'}</span></div>
+        <div class="post-row-date">${fmtDate(post.createdAt)}</div>
+        <div class="post-row-actions">
+          <button class="btn-outline-sm edit-btn" data-id="${post.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> Editar</button>
+          <button class="btn-danger-sm delete-btn" data-id="${post.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Excluir</button>
+        </div>
+      </div>`).join('');
+    container.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', () => openEditor(btn.dataset.id)));
+    container.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', () => openDeleteModal(btn.dataset.id)));
+  }
+
+  /* ---- NAV ---- */
+  function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); }
+  function setSidebarActive(id) { document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+  document.getElementById('nav-posts').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Todos os escritos'; renderPostsTable('all'); showView('posts'); setSidebarActive('nav-posts'); });
+  document.getElementById('nav-published').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Publicados'; renderPostsTable('published'); showView('posts'); setSidebarActive('nav-published'); });
+  document.getElementById('nav-drafts').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Rascunhos'; renderPostsTable('draft'); showView('posts'); setSidebarActive('nav-drafts'); });
+
+  function goNew() { openEditor(null); setSidebarActive('nav-new-post'); }
+  document.getElementById('nav-new-post').addEventListener('click', goNew);
+  document.getElementById('btn-new-post-main').addEventListener('click', goNew);
+  document.getElementById('btn-back-list').addEventListener('click', () => { showView('posts'); setSidebarActive('nav-posts'); });
+
+  /* ---- EDITOR ---- */
+  function openEditor(postId) {
+    editingPostId = postId;
+    initQuill();
+    quill.setContents([]);
+    document.getElementById('ed-title').value   = '';
+    document.getElementById('ed-excerpt').value = '';
+    document.getElementById('ed-cover').value   = '';
+    document.getElementById('ed-published').checked = true;
+    document.getElementById('toggle-label-text').textContent = 'Publicado';
+    document.getElementById('cover-preview').classList.remove('visible');
+    document.getElementById('editor-heading').textContent = postId ? 'Editar escrito' : 'Novo escrito';
+    if (postId) {
+      const post = allPosts.find(p => p.id === postId);
+      if (post) {
+        document.getElementById('ed-title').value   = post.title || '';
+        document.getElementById('ed-excerpt').value = post.excerpt || '';
+        document.getElementById('ed-cover').value   = post.coverImage || '';
+        document.getElementById('ed-published').checked = !!post.published;
+        document.getElementById('toggle-label-text').textContent = post.published ? 'Publicado' : 'Rascunho';
+        quill.root.innerHTML = post.contentHTML || '';
+        if (post.coverImage) { document.getElementById('cover-preview-img').src = post.coverImage; document.getElementById('cover-preview').classList.add('visible'); }
+      }
+    }
+    showView('editor');
+  }
+
+  document.getElementById('ed-cover').addEventListener('input', function() {
+    const val = this.value.trim();
+    document.getElementById('cover-preview-img').src = val;
+    document.getElementById('cover-preview').classList.toggle('visible', !!val);
+  });
+  document.getElementById('ed-published').addEventListener('change', function() {
+    document.getElementById('toggle-label-text').textContent = this.checked ? 'Publicado' : 'Rascunho';
+  });
+
+  /* ---- SAVE ---- */
+  function savePost(forcePublished) {
+    const title      = document.getElementById('ed-title').value.trim();
+    const excerpt    = document.getElementById('ed-excerpt').value.trim();
+    const coverImage = document.getElementById('ed-cover').value.trim();
+    const published  = forcePublished !== undefined ? forcePublished : document.getElementById('ed-published').checked;
+    const contentHTML = quill.root.innerHTML;
+    if (!title) { showToast('Digite um título antes de salvar.'); return; }
+    const btnId = forcePublished ? 'btn-publish' : 'btn-save-draft';
+    const btn   = document.getElementById(btnId);
+    btn.disabled = true; btn.textContent = 'Salvando…';
+    const data = { title, excerpt, coverImage, contentHTML, published, authorName: CONFIG.nome, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+    const ref  = editingPostId ? db.collection('posts').doc(editingPostId) : db.collection('posts').doc();
+    if (!editingPostId) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+    ref.set(data, { merge: true }).then(() => {
+      showToast(published ? '✓ Escrito publicado!' : '✓ Rascunho salvo.');
+      editingPostId = ref.id;
+      showView('posts'); setSidebarActive('nav-posts');
+    }).catch(() => showToast('Erro ao salvar. Tente novamente.'))
+    .finally(() => { btn.disabled = false; btn.textContent = forcePublished ? 'Publicar' : 'Salvar rascunho'; if (forcePublished) btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg> Publicar`; });
+  }
+
+  document.getElementById('btn-publish').addEventListener('click', () => savePost(true));
+  document.getElementById('btn-save-draft').addEventListener('click', () => savePost(false));
+
+  /* ---- DELETE ---- */
+  function openDeleteModal(id) { deleteTarget = id; document.getElementById('delete-modal').classList.add('open'); }
+  document.getElementById('delete-cancel').addEventListener('click', () => { document.getElementById('delete-modal').classList.remove('open'); deleteTarget = null; });
+  document.getElementById('delete-modal').addEventListener('click', e => { if (e.target === document.getElementById('delete-modal')) document.getElementById('delete-modal').classList.remove('open'); });
+  document.getElementById('delete-confirm').addEventListener('click', () => {
+    if (!deleteTarget) return;
+    const btn = document.getElementById('delete-confirm');
+    btn.disabled = true; btn.textContent = 'Excluindo…';
+    db.collection('posts').doc(deleteTarget).delete()
+      .then(() => { showToast('Escrito excluído.'); document.getElementById('delete-modal').classList.remove('open'); deleteTarget = null; })
+      .catch(() => showToast('Não foi possível excluir.'))
+      .finally(() => { btn.disabled = false; btn.textContent = 'Excluir'; });
+  });
+  </script>
+</body>
+</html>

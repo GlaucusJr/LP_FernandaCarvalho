@@ -42,14 +42,14 @@ const CONFIG = {
   // -----------------------------------------------------------------------
   // PALETA DE CORES DA PSICANALISTA
   // -----------------------------------------------------------------------
-  corPrimaria:        "#1A4A5B",   // Água Profunda — primária
-  corPrimariaEscura:  "#0E3340",   // Água Profunda — escura
-  corSecundaria:      "#D6EEE9",   // Água Profunda — secundária pastel
-  corCTA:             "#2E9E88",   // Água Profunda — CTA verde-água
-  corCTAEscura:       "#238A76",   // Água Profunda — CTA hover
-  corBackground:      "#F2F9F8",   // Água Profunda — fundo geral
-  corTexto:           "#243840",   // Água Profunda — texto principal
-  corCinza:           "#5A6E74",   // Texto secundário
+  corPrimaria:        "#1A4A5B",   // Azul Petróleo — primária
+  corPrimariaEscura:  "#0E3340",   // Azul Petróleo — escura
+  corSecundaria:      "#C8DCE4",   // Azul Petróleo — secundária (petróleo claro médio)
+  corCTA:             "#1A4A5B",   // Azul Petróleo — CTA (botões principais)
+  corCTAEscura:       "#0E3340",   // Azul Petróleo — CTA hover
+  corBackground:      "#E8F2F6",   // Azul Petróleo — fundo clarinho predominante
+  corTexto:           "#0E3340",   // Texto principal (petróleo escuro)
+  corCinza:           "#4A6572",   // Texto secundário
 
   // Escritos (blog)
   blogTitulo: "Escritos",
@@ -96,27 +96,21 @@ const CONFIG = {
 const QUEM_EU_SOU_CARDS = [
   {
     icone: "formacao",
-    titulo: "Minha formação",
-    resumo: "Trajetória acadêmica e clínica.",
-    conteudo: CONFIG.minhaFormacao.conteudo,
+    titulo: "Minha trajetória",
+    resumo: "Formação e percurso acadêmico.",
+    conteudo: `<p>Minha formação foi construída a partir do encontro entre diferentes áreas do conhecimento. A experiência na saúde, os estudos em teologia, filosofia, literatura e, principalmente, a psicanálise contribuíram para a forma como compreendo a singularidade de cada história.</p><p>Entendo a formação do psicanalista como um processo contínuo. Por isso, mantenho meus estudos por meio de supervisão clínica, grupos de leitura e cursos de atualização permanentes.</p><br><strong>Formação</strong><ul><li>Graduação em Farmácia.</li><li>Bacharelado em Teologia.</li><li>Estudos em Filosofia e Letras.</li><li>Pós-graduações em Literatura Brasileira e Literatura Universal.</li><li>Formação em Psicanálise Clínica pelo Instituto Andréia Vermont – IAV.</li><li>Especialização em TEA, TDAH e Neurociências pelo Instituto Andrea Vermont – IAV.</li><li>Graduanda em Psicologia.</li></ul><br><strong>Formação continuada</strong><ul><li>Supervisão clínica no Instituto Suziani Lemos – ISL.</li><li>Grupo permanente de estudos em Psicanálise no ISL.</li><li>Mentoria e Consultorias pelo ISL.</li><li>Formação continuada pela Escola Fluminense de Psicanálise – ESFLUP.</li><li>Cursos de aprofundamento com a Dra. Fernanda Samico.</li><li>Estudos e cursos promovidos pela ESPcast.</li><li>Participação em seminários, grupos de leitura e atividades de atualização em Psicanálise.</li></ul>`,
   },
   {
     icone: "escuta",
-    titulo: "Minha escuta",
-    resumo: "Como acontece a escuta analítica.",
-    conteudo: CONFIG.minhaEscuta.conteudo,
-  },
-  {
-    icone: "atendimentos",
-    titulo: "Os atendimentos",
-    resumo: "Como funciona, presencial e online.",
-    conteudo: CONFIG.osAtendimentos.conteudo,
+    titulo: "Como compreendo a análise",
+    resumo: "O que orienta minha escuta clínica.",
+    conteudo: `<p>Acredito que toda história merece um lugar onde possa ser escutada.</p><p>Nem sempre encontramos, na vida cotidiana, um espaço onde seja possível falar sem a necessidade de corresponder a expectativas, justificar sentimentos ou encontrar respostas imediatas.</p><p>A análise oferece esse espaço. Um encontro sustentado pela escuta, no qual cada pessoa pode construir, pouco a pouco, novos sentidos para sua própria história.</p><p>Acredito que o sofrimento não se apresenta da mesma forma para todos. Ainda que duas pessoas vivam experiências semelhantes, cada uma atribui sentidos diferentes ao que vive. Por isso, cada processo analítico é singular. Não há respostas prontas nem interpretações que sirvam para todos.</p><p>Não compreendo a análise como um lugar onde alguém diz ao outro quem ele é. Compreendo-a como um encontro em que, pela palavra e pela escuta, cada pessoa pode descobrir algo novo sobre si mesma.</p><p>Meu compromisso é sustentar esse espaço com ética, respeito e atenção ao tempo de cada pessoa.</p>`,
   },
   {
     icone: "escritos",
     titulo: "Escritos",
-    resumo: "Reflexões sobre psicanálise.",
-    conteudo: "Os Escritos são um espaço onde compartilho reflexões sobre a escuta, a clínica e a vida psíquica. Não são artigos acadêmicos — são pensamentos que surgem da prática e da leitura, escritos para quem quer se aproximar da psicanálise de um jeito acessível.",
+    resumo: "Reflexões sobre psicanálise e literatura.",
+    conteudo: `<p>Um espaço onde compartilho reflexões sobre psicanálise, literatura e temas da experiência humana.</p><p>Os textos reunidos aqui nasceram de leituras, da prática clínica e das perguntas que atravessam o cotidiano. São convites à reflexão, não respostas prontas.</p>`,
     link: "escritos.html",
   },
 ];
@@ -128,27 +122,27 @@ const QUEM_EU_SOU_CARDS = [
 const QUANDO_FAZ_SENTIDO = [
   {
     texto: "Você vive tentando corresponder às expectativas dos outros.",
-    conteudo: "Quando a vida parece ser vivida para os outros — para não decepcioná-los, para ser amado, para não criar conflito — algo do próprio desejo fica silenciado. A análise pode ajudar a escutar o que você quer, mais além do que esperam de você.",
+    conteudo: "Quando a vida parece ser vivida para os outros — para não decepcionar, para ser amado ou para evitar conflitos —, é comum nos afastarmos daquilo que faz sentido para nós. A análise é um espaço para reencontrar essa escuta.",
   },
   {
     texto: "Percebe que repete os mesmos conflitos.",
-    conteudo: "Relações que terminam sempre do mesmo jeito. Situações que se repetem mesmo quando tudo parece diferente. A psicanálise parte do princípio de que essas repetições têm sentido — e que é possível compreendê-las para sair delas.",
+    conteudo: "As pessoas mudam. As circunstâncias também. Ainda assim, algumas histórias parecem se repetir. A análise é um espaço para olhar essas repetições com mais cuidado e compreender o que elas podem estar dizendo sobre a sua história.",
   },
   {
     texto: "Atravessa um período de ansiedade ou angústia.",
-    conteudo: "A angústia é um sinal de que algo no sujeito precisa de atenção. Ela não é um defeito a ser corrigido, mas uma mensagem que merece ser escutada. A análise oferece um espaço para que essa escuta aconteça, com tempo e sem pressa.",
+    conteudo: "A ansiedade e a angústia nem sempre podem ser explicadas de imediato. Às vezes, elas apenas indicam que algo precisa ser escutado com mais cuidado. A análise oferece esse espaço de escuta, respeitando o tempo e a singularidade de cada história.",
   },
   {
     texto: "Está vivendo um luto ou uma mudança importante.",
-    conteudo: "Perdas, separações, mudanças de fase — esses momentos podem mobilizar muito. Elaborar uma perda não é esquecê-la, mas encontrar um lugar para ela na própria história. A análise acompanha esse processo.",
+    conteudo: "Perdas, separações e mudanças importantes podem nos atravessar de maneiras muito diferentes. Elaborar uma perda não é esquecê-la, mas permitir que ela encontre um lugar na própria história. A análise oferece um espaço onde esse processo pode acontecer com tempo, escuta e respeito.",
   },
   {
     texto: "Sente que perdeu o contato consigo mesmo.",
-    conteudo: "Uma sensação de que a vida está passando sem que você esteja nela de verdade. De que algo falta, mas você não sabe o quê. A análise pode ser um espaço para reencontrar o fio da própria história.",
+    conteudo: "Há momentos em que seguimos vivendo, cumprindo compromissos e atravessando os dias, mas com a sensação de estarmos distantes de nós mesmos. A análise oferece um espaço para que essa distância possa ser escutada e compreendida.",
   },
   {
     texto: "Busca um lugar onde possa falar e ser escutado.",
-    conteudo: "Às vezes o que mais falta é simplesmente um espaço onde se possa dizer o que se pensa, sem julgamento e sem pressa por respostas. A análise é exatamente isso: um lugar de palavra e escuta.",
+    conteudo: "Nem sempre é fácil encontrar um espaço onde possamos falar livremente, sem medo de sermos julgados ou de precisarmos ter todas as respostas. A análise oferece um tempo e um lugar para que a palavra encontre escuta.",
   },
 ];
 
