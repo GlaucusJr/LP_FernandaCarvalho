@@ -469,7 +469,7 @@
 
     <div class="login-card">
       <h1>Área Admin</h1>
-      <p class="login-sub">Entre com suas credenciais para gerenciar os Escritos.</p>
+      <p class="login-sub">Entre com suas credenciais para gerenciar suas Publicações.</p>
 
       <div class="login-field">
         <label for="login-email">E-mail</label>
@@ -523,7 +523,7 @@
         <div class="sidebar-label">Conteúdo</div>
         <button class="sidebar-btn active" data-view="posts" id="nav-posts">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          Todos os escritos
+          Todos os Posts
           <span class="sidebar-counter" id="counter-all">0</span>
         </button>
         <button class="sidebar-btn" id="nav-published">
@@ -550,7 +550,7 @@
         <!-- POSTS LIST VIEW -->
         <div class="view active" id="view-posts">
           <div class="posts-header">
-            <h2 id="posts-view-title">Todos os escritos</h2>
+            <h2 id="posts-view-title">Todos os Posts</h2>
             <button class="btn-primary" id="btn-new-post-main">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Novo escrito
@@ -566,7 +566,7 @@
             <div id="posts-rows">
               <div class="empty-state-table">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                <p>Carregando escritos…</p>
+                <p>Carregando Posts…</p>
               </div>
             </div>
           </div>
@@ -781,7 +781,7 @@
       document.getElementById('counter-published').textContent = pub;
       document.getElementById('counter-drafts').textContent   = draft;
       renderPostsTable(currentFilter);
-    }, () => showToast('Não foi possível carregar os escritos.'));
+    }, () => showToast('Não foi possível carregar os Posts.'));
   }
 
   function renderPostsTable(filter = 'all') {
@@ -815,7 +815,7 @@
   function showView(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); }
   function setSidebarActive(id) { document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-  document.getElementById('nav-posts').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Todos os escritos'; renderPostsTable('all'); showView('posts'); setSidebarActive('nav-posts'); });
+  document.getElementById('nav-posts').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Todos os Posts'; renderPostsTable('all'); showView('posts'); setSidebarActive('nav-posts'); });
   document.getElementById('nav-published').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Publicados'; renderPostsTable('published'); showView('posts'); setSidebarActive('nav-published'); });
   document.getElementById('nav-drafts').addEventListener('click', () => { document.getElementById('posts-view-title').textContent = 'Rascunhos'; renderPostsTable('draft'); showView('posts'); setSidebarActive('nav-drafts'); });
 
