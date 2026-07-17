@@ -205,7 +205,7 @@ const CAMINHOS_ITEMS = [
   "Quando os relacionamentos se tornam fonte de sofrimento",
   "Quando algumas histórias insistem em se repetir",
   "Quando sentimos que estamos vivendo mais para os outros do que para nós mesmos",
-  "Quando uma pergunta começa a insistir: O que eu desejo?",
+  "Quando uma pergunta começa a insistir: <strong>O que eu desejo?</strong>",
 ];
 
 function renderTestimonials() {
@@ -249,36 +249,53 @@ function renderPrimeiroPasso() {
         <div class="eyebrow">Início</div>
         <h2 id="primeiro-passo-heading">Como dar o primeiro passo</h2>
       </div>
-      <div class="trilha-passos">
-        <div class="trilha-connector" aria-hidden="true"></div>
-        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0s">
-          <div class="trilha-num">1</div>
-          <div class="trilha-body">
+      <div class="trilha-vertical">
+        <div class="trilha-vertical-spine" aria-hidden="true"></div>
+
+        <div class="trilha-vertical-item trilha-v-left" data-animate="fade-right" style="transition-delay:0s">
+          <div class="trilha-v-body">
             <h3>Entre em contato</h3>
             <p>Se desejar iniciar uma análise, entre em contato pelo WhatsApp para esclarecer dúvidas, verificar a disponibilidade de horários e agendar um primeiro encontro.</p>
           </div>
+          <div class="trilha-v-center">
+            <div class="trilha-v-num">01</div>
+          </div>
+          <div class="trilha-v-empty"></div>
         </div>
-        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0.1s">
-          <div class="trilha-num">2</div>
-          <div class="trilha-body">
+
+        <div class="trilha-vertical-item trilha-v-right" data-animate="fade-left" style="transition-delay:0.12s">
+          <div class="trilha-v-empty"></div>
+          <div class="trilha-v-center">
+            <div class="trilha-v-num">02</div>
+          </div>
+          <div class="trilha-v-body">
             <h3>Primeiro encontro</h3>
             <p>A primeira sessão é um espaço para que você possa falar sobre o que motivou sua busca e conhecer como o trabalho analítico acontece.</p>
           </div>
         </div>
-        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0.2s">
-          <div class="trilha-num">3</div>
-          <div class="trilha-body">
+
+        <div class="trilha-vertical-item trilha-v-left" data-animate="fade-right" style="transition-delay:0.24s">
+          <div class="trilha-v-body">
             <h3>Início do processo</h3>
             <p>Se entendermos que a análise é o caminho adequado, definiremos juntos a continuidade dos encontros.</p>
           </div>
+          <div class="trilha-v-center">
+            <div class="trilha-v-num">03</div>
+          </div>
+          <div class="trilha-v-empty"></div>
         </div>
-        <div class="trilha-item" data-animate="fade-up" style="transition-delay:0.3s">
-          <div class="trilha-num">4</div>
-          <div class="trilha-body">
+
+        <div class="trilha-vertical-item trilha-v-right" data-animate="fade-left" style="transition-delay:0.36s">
+          <div class="trilha-v-empty"></div>
+          <div class="trilha-v-center">
+            <div class="trilha-v-num">04</div>
+          </div>
+          <div class="trilha-v-body">
             <h3>Um percurso singular</h3>
             <p>Cada análise é única. O processo se constrói ao longo do tempo, respeitando a história e o ritmo de cada pessoa.</p>
           </div>
         </div>
+
       </div>
     </div>
   `;
