@@ -150,12 +150,16 @@ const QUANDO_FAZ_SENTIDO = [
    4. FAQ
 ------------------------------------------------------------------------ */
 const FAQ = [
-  { pergunta: "Como funciona a análise online?", resposta: "As sessões acontecem por videochamada, em plataforma segura, com a mesma presença e qualidade do atendimento presencial. O ambiente que você cria do seu lado também faz parte do espaço analítico." },
-  { pergunta: "Qual a duração e frequência das sessões?", resposta: "As sessões têm duração variável — na psicanálise, o tempo não é fixo como em outras abordagens. A frequência costuma ser semanal, podendo variar conforme o processo de cada analisando." },
-  { pergunta: "Planos de saúde são aceitos?", resposta: "O atendimento é particular. Ao final de cada mês pode ser fornecido recibo para reembolso, caso seu convênio ofereça essa opção." },
-  { pergunta: "Como agendar uma primeira conversa?", resposta: "O contato inicial acontece pelo WhatsApp. Conversamos brevemente sobre como funciona, tiramos dúvidas e agendamos uma entrevista inicial sem compromisso." },
-  { pergunta: "As sessões são sigilosas?", resposta: "Sim. O sigilo profissional é garantido conforme o Código de Ética do Psicólogo e os princípios éticos da psicanálise." },
-  { pergunta: "Psicanálise e psicologia são a mesma coisa?", resposta: "A psicanálise é uma das abordagens dentro da psicologia, mas tem fundamentos, técnica e objetivos próprios. Enquanto outras abordagens buscam modificar comportamentos ou aliviar sintomas, a psicanálise propõe escutar o que está por trás deles." },
+  { pergunta: "Como acontecem as sessões?", resposta: "As sessões são realizadas semanalmente, em dia e horário previamente combinados. Cada encontro é um espaço de escuta e elaboração, construído de acordo com a singularidade de cada pessoa." },
+  { pergunta: "As sessões são online?", resposta: "Sim. Os atendimentos acontecem por videochamada, em um ambiente reservado e sigiloso. Essa modalidade permite que pessoas de diferentes cidades e países possam realizar sua análise." },
+  { pergunta: "Onde acontecem os atendimentos presenciais?", resposta: "Os atendimentos presenciais podem ser realizados em Pindamonhangaba ou Taubaté, mediante disponibilidade e agendamento prévio. Caso essa modalidade seja de seu interesse, entre em contato para verificarmos a possibilidade." },
+  { pergunta: "Quanto tempo dura cada sessão?", resposta: "Cada sessão tem, em média, 50 minutos." },
+  { pergunta: "Como faço para agendar o primeiro encontro?", resposta: "Você pode entrar em contato pelo WhatsApp para esclarecer dúvidas, verificar a disponibilidade de horários e agendar a primeira sessão." },
+  { pergunta: "As conversas são sigilosas?", resposta: "Sim. O sigilo é um dos princípios fundamentais da prática psicanalítica e faz parte do compromisso ético que sustenta todo o processo analítico." },
+  { pergunta: "Qual é a frequência dos encontros?", resposta: "Os encontros costumam acontecer semanalmente. A frequência é definida de acordo com o processo e as necessidades de cada pessoa." },
+  { pergunta: "O atendimento é destinado a quem?", resposta: "Atendo adolescentes e adultos. Os atendimentos são realizados principalmente na modalidade online. Em casos específicos, há possibilidade de atendimento presencial, mediante disponibilidade e agendamento prévio." },
+  { pergunta: "Os planos de saúde são aceitos?", resposta: "Os atendimentos são particulares. No momento, não realizo atendimentos por convênios ou planos de saúde." },
+  { pergunta: "Preciso saber exatamente o que está acontecendo comigo para começar uma análise?", resposta: "Não. Muitas pessoas procuram a análise sem conseguir explicar exatamente o que estão vivendo. O processo também é um espaço para construir essa compreensão, pouco a pouco." },
 ];
 
 /* ------------------------------------------------------------------------
