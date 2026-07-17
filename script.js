@@ -298,6 +298,9 @@ function renderPrimeiroPasso() {
 
       </div>
     </div>
+    <div class="hero-wave-bottom">
+      <svg class="wave-divider into-primary" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,40 L1440,80 L0,80 Z"/></svg>
+    </div>
   `;
   depoimentosSection.after(section);
 }
@@ -427,6 +430,7 @@ function renderCTAFinal() {
     <p>Se você acredita que este pode ser o seu momento, será um prazer caminhar ao seu lado nesse início de percurso.</p>
     <div class="cta-final-actions">
       <a class="btn btn-primary" href="${whatsappLink()}" target="_blank" rel="noopener">${iconSVG('whatsapp')} Agendar um primeiro encontro</a>
+      <a class="btn btn-outline" href="https://www.instagram.com/psifernandacarvalho.br?igsh=MXB4bGE1OGJheXZ1bg==" target="_blank" rel="noopener">${iconSVG('instagram')} Instagram</a>
     </div>
   `;
 }
@@ -438,9 +442,7 @@ function renderFooter() {
   el.innerHTML = `
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#top" class="logo" aria-label="Página inicial">
-          <img src="${CONFIG.logoSemFundo}" alt="${CONFIG.nome}" class="logo-img logo-img-footer" onerror="this.style.display='none';this.nextSibling.style.display='inline'"><span style="display:none;">${CONFIG.nome}</span>
-        </a>
+        <a href="#top" class="logo" aria-label="Página inicial">Fernanda Carvalho</a>
         <p>${CONFIG.especialidade}</p>
         <div class="footer-social">
           ${CONFIG.instagram ? `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" aria-label="Instagram">${iconSVG('instagram')}</a>` : ''}
