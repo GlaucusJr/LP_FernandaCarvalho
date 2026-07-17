@@ -1,9 +1,9 @@
 /* ============================================================================
-   ESCRITOS.JS
+   ESCRITOS.JS (BLOG DE PSICOLOGIA)
    ----------------------------------------------------------------------------
-   Blog simplificado sem sistema de usuários.
-   - Leitores: só leem. Sem cadastro, sem login, sem comentários, sem curtidas.
-   - Admin (ADMIN_UID em firebase-config.js): faz login via E-mail e Senha.
+   Blog simplificado focado em artigos e textos de psicologia.
+   - Leitores: apenas leitura, sem cadastro ou comentários.
+   - Admin: publicação de textos via E-mail e Senha.
    ============================================================================ */
 
 /* --------------------------------- INIT FIREBASE --------------------------------- */
@@ -53,7 +53,7 @@ const ICONS = {
   edit:      '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>',
   trash:     '<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
   arrowLeft: '<path d="M19 12H5M12 19l-7-7 7-7"/>',
-  postIcon:  '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  postIcon:  '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 20V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/>', // Ícone que lembra livro/artigo
   key:       '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 3-9.6 9.6"/><path d="m15.5 7.5 3 3M18 5l3 3"/>',
 };
 function iconSVG(name, cls = '') {
@@ -71,15 +71,14 @@ function renderAdminBar() {
     document.getElementById('btn-signout').addEventListener('click', () => auth.signOut());
   } else {
     if (bar) bar.classList.remove('visible');
-    // Redireciona o botão discreto com ícone de chave para a tela de login nativa
     authBar.innerHTML = `<button class="btn-admin-login" id="btn-admin-login" title="Área administrativa" aria-label="Acesso administrativo">${iconSVG('key')}</button>`;
     document.getElementById('btn-admin-login').addEventListener('click', () => {
-      window.location.href = 'admin.html'; // Altere para o nome do seu arquivo HTML de login, caso seja diferente
+      window.location.href = 'admin.html';
     });
   }
 }
 
-// Monitora o estado de autenticação do Firebase
+// Monitora o estado de autenticação
 auth.onAuthStateChanged(user => {
   currentUser = user;
   renderAdminBar();
@@ -98,7 +97,7 @@ auth.onAuthStateChanged(user => {
 function loadPostsList() {
   const grid = document.getElementById('posts-grid');
   if (!grid) return;
-  grid.innerHTML = '<p style="opacity:.6;">Carregando escritos…</p>';
+  grid.innerHTML = '<p style="opacity:.6;">Carregando artigos…</p>';
 
   let query = db.collection('posts').orderBy('createdAt', 'desc');
   if (!isAdmin()) query = query.where('published', '==', true);
@@ -108,7 +107,7 @@ function loadPostsList() {
       grid.innerHTML = `
         <div class="empty-state">
           ${iconSVG('postIcon')}
-          <p>${isAdmin() ? 'Nenhum escrito ainda. Clique em "Novo escrito" para começar.' : 'Em breve, novos escritos por aqui.'}</p>
+          <p>${isAdmin() ? 'Nenhum artigo publicado. Clique em "Novo Texto" para começar.' : 'Em breve, novos textos e reflexões por aqui.'}</p>
         </div>`;
       return;
     }
@@ -116,7 +115,7 @@ function loadPostsList() {
     attachCardEvents();
   }, err => {
     console.error(err);
-    grid.innerHTML = `<p style="opacity:.6;">Não foi possível carregar os escritos agora.</p>`;
+    grid.innerHTML = `<p style="opacity:.6;">Não foi possível carregar as publicações agora.</p>`;
   });
 }
 
@@ -126,8 +125,8 @@ function renderPostCard(id, post) {
       ${!post.published ? '<span class="post-card-draft-badge">Rascunho</span>' : ''}
       ${isAdmin() ? `
         <div class="post-card-admin-actions">
-          <button class="edit-btn" data-id="${id}" aria-label="Editar">${iconSVG('edit')}</button>
-          <button class="delete-btn" data-id="${id}" aria-label="Excluir">${iconSVG('trash')}</button>
+          <button class="edit-btn" data-id="${id}" aria-label="Editar Texto">${iconSVG('edit')}</button>
+          <button class="delete-btn" data-id="${id}" aria-label="Excluir Texto">${iconSVG('trash')}</button>
         </div>` : ''}
       <div class="post-card-header">
         <img class="post-card-avatar" src="${CONFIG.logoSemFundo || CONFIG.fotoPrincipal}" alt="${escapeHTML(CONFIG.nome)}" loading="lazy">
@@ -156,7 +155,7 @@ function attachCardEvents() {
   });
 }
 
-/* --------------------------------- POST INDIVIDUAL --------------------------------- */
+/* --------------------------------- ARTIGO INDIVIDUAL --------------------------------- */
 function loadPostDetail(postId) {
   const viewList = document.getElementById('view-list');
   if (viewList) viewList.style.display = 'none';
@@ -164,17 +163,17 @@ function loadPostDetail(postId) {
   const view = document.getElementById('view-post');
   if (!view) return;
   view.style.display = 'block';
-  view.innerHTML = '<p style="opacity:.6;text-align:center;padding:60px 0;">Carregando…</p>';
+  view.innerHTML = '<p style="opacity:.6;text-align:center;padding:60px 0;">Carregando artigo…</p>';
 
   db.collection('posts').doc(postId).get().then(doc => {
     if (!doc.exists || (!doc.data().published && !isAdmin())) {
-      view.innerHTML = '<p style="text-align:center;padding:60px 0;">Escrito não encontrado.</p>';
+      view.innerHTML = '<p style="text-align:center;padding:60px 0;">Artigo não encontrado.</p>';
       return;
     }
     const post = doc.data();
     view.innerHTML = `
       <div class="container">
-        <a href="escritos.html" class="back-to-blog">${iconSVG('arrowLeft')} Voltar aos Escritos</a>
+        <a href="escritos.html" class="back-to-blog">${iconSVG('arrowLeft')} Voltar aos Artigos</a>
         <div class="post-detail-header" style="margin-top:24px;">
           <span class="post-card-date">${fmtDate(post.createdAt)}</span>
           <h1>${escapeHTML(post.title || '')}</h1>
@@ -182,7 +181,7 @@ function loadPostDetail(postId) {
         ${post.coverImage ? `<div class="post-detail-cover"><img src="${post.coverImage}" alt="${escapeHTML(post.title || '')}"></div>` : ''}
         <div class="post-detail-content">${post.contentHTML || ''}</div>
         <div class="post-detail-actions">
-          <a href="escritos.html" class="back-to-blog">${iconSVG('arrowLeft')} Voltar aos Escritos</a>
+          <a href="escritos.html" class="back-to-blog">${iconSVG('arrowLeft')} Voltar aos Artigos</a>
           ${isAdmin() ? `<div style="display:flex;gap:10px;">
             <button class="btn btn-outline btn-sm" id="detail-edit-btn">${iconSVG('edit')} Editar</button>
             <button class="btn btn-outline btn-sm" id="detail-delete-btn" style="color:#B5453A;">${iconSVG('trash')} Excluir</button>
@@ -210,7 +209,7 @@ function initQuill() {
   if (quill) return;
   quill = new Quill('#quill-editor', {
     theme: 'snow',
-    placeholder: 'Escreva aqui...',
+    placeholder: 'Escreva seu texto ou reflexão de psicologia aqui...',
     modules: {
       toolbar: {
         container: [
@@ -222,7 +221,7 @@ function initQuill() {
         ],
         handlers: {
           image: () => {
-            const url = prompt('Cole a URL da imagem:');
+            const url = prompt('Cole a URL da imagem de cobertura ou ilustração:');
             if (url) quill.insertEmbed(quill.getSelection()?.index || 0, 'image', url);
           },
         },
@@ -240,7 +239,7 @@ function openEditor(postId = null) {
   document.getElementById('editor-cover').value = '';
   document.getElementById('editor-excerpt').value = '';
   document.getElementById('editor-published').checked = true;
-  document.getElementById('editor-heading').textContent = postId ? 'Editar escrito' : 'Novo escrito';
+  document.getElementById('editor-heading').textContent = postId ? 'Editar artigo' : 'Novo texto / artigo';
 
   if (postId) {
     db.collection('posts').doc(postId).get().then(doc => {
@@ -269,7 +268,7 @@ function savePost() {
   const published  = document.getElementById('editor-published').checked;
   const contentHTML = quill.root.innerHTML;
 
-  if (!title) { showToast('Dê um título ao escrito antes de salvar.'); return; }
+  if (!title) { showToast('Dê um título ao seu artigo antes de salvar.'); return; }
 
   const saveBtn = document.getElementById('editor-save-btn');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Salvando…'; }
@@ -285,19 +284,19 @@ function savePost() {
 
   ref.set(data, { merge: true })
     .then(() => {
-      showToast(published ? '✓ Escrito publicado!' : '✓ Rascunho salvo.');
+      showToast(published ? '✓ Artigo publicado com sucesso!' : '✓ Rascunho salvo.');
       closeEditor();
     })
-    .catch(err => { console.error(err); showToast('Erro ao salvar.'); })
+    .catch(err => { console.error(err); showToast('Erro ao salvar o artigo.'); })
     .finally(() => { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Salvar'; } });
 }
 
 function confirmDeletePost(postId, fromDetail = false) {
   if (!isAdmin()) return;
-  if (confirm('Deseja realmente excluir este escrito permanentemente?')) {
+  if (confirm('Deseja realmente excluir este artigo permanentemente?')) {
     db.collection('posts').doc(postId).delete()
       .then(() => {
-        showToast('Escrito excluído.');
+        showToast('Artigo removido.');
         if (fromDetail) window.location.href = 'escritos.html';
       })
       .catch(err => { console.error(err); showToast('Erro ao excluir.'); });
