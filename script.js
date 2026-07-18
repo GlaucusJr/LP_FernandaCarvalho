@@ -49,11 +49,24 @@ function generoTexto(masc, fem) {
 /* --------------------------------- HEADER (logo imagem) --------------------------------- */
 function renderHeader() {
   const logoEl = document.getElementById('logo-text');
-  // Usa a logo como imagem; se não carregar, cai para o nome em texto
   logoEl.innerHTML = `<img src="${CONFIG.logoSemFundo}" alt="${CONFIG.nome}" class="logo-img" onerror="this.style.display='none';this.nextSibling.style.display='inline'"><span style="display:none;">${CONFIG.nome.split(' ')[0]} <span>${CONFIG.nome.split(' ').slice(1).join(' ')}</span></span>`;
 
   document.querySelectorAll('.wa-link').forEach(el => el.href = whatsappLink());
   document.querySelectorAll('.wa-link-text').forEach(el => el.textContent = 'Falar no WhatsApp');
+
+  // Botão Instagram no header-cta
+  const ctaEl = document.querySelector('.header-cta');
+  if (ctaEl && CONFIG.instagram) {
+    const igBtn = document.createElement('a');
+    igBtn.href = CONFIG.instagram;
+    igBtn.target = '_blank';
+    igBtn.rel = 'noopener';
+    igBtn.setAttribute('aria-label', 'Instagram');
+    igBtn.className = 'btn-nav-instagram';
+    igBtn.innerHTML = iconSVG('instagram');
+    const menuToggle = ctaEl.querySelector('.menu-toggle');
+    ctaEl.insertBefore(igBtn, menuToggle);
+  }
 }
 
 /* --------------------------------- HERO (foto esquerda, texto direita) --------------------------------- */
@@ -442,33 +455,48 @@ function renderFooter() {
   el.innerHTML = `
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#top" class="logo" aria-label="Página inicial">Fernanda Carvalho</a>
-        <p>${CONFIG.especialidade}</p>
+        <a href="#top" class="logo" aria-label="Página inicial">
+          <img src="${CONFIG.logoSemFundo}" alt="${CONFIG.nome}" class="footer-logo-img"
+               onerror="this.style.display='none';this.nextSibling.style.display='inline'">
+          <span style="display:none;">${CONFIG.nome}</span>
+        </a>
+        <p>${CONFIG.especialidade} · ${CONFIG.crp}</p>
+        <a href="mailto:${CONFIG.email}" style="display:block;margin-top:6px;color:rgba(255,255,255,0.55);font-size:0.82rem;">${CONFIG.email}</a>
         <div class="footer-social">
           ${CONFIG.instagram ? `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" aria-label="Instagram">${iconSVG('instagram')}</a>` : ''}
           <a href="${whatsappLink()}" target="_blank" rel="noopener" aria-label="WhatsApp">${iconSVG('whatsapp')}</a>
         </div>
       </div>
-      <div class="footer-col">
-        <h4>Navegação</h4>
-        <ul>
+      <div class="footer-col footer-col-nav2">
+        <h4 style="text-align:center;">Navegação</h4>
+        <ul class="footer-nav-2col">
           <li><a href="#quem-eu-sou">Quem eu sou</a></li>
           <li><a href="#quando">Quando faz sentido</a></li>
-          <li><a href="#faq">Dúvidas</a></li>
+          <li><a href="#depoimentos">Caminhos para a análise</a></li>
+          <li><a href="#primeiro-passo">Como dar o primeiro passo</a></li>
+          <li><a href="#minha-clinica">Minha clínica</a></li>
+          <li><a href="#faq">Dúvidas frequentes</a></li>
           <li><a href="escritos.html">Escritos</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Contato</h4>
+        <h4>Atendimento</h4>
         <ul>
-          <li><a href="mailto:${CONFIG.email}">${CONFIG.email}</a></li>
-          <li><span>${CONFIG.horarios || 'Segunda a sexta, das 9h às 18h'}</span></li>
+          <li>
+            <span style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.85);font-size:0.88rem;line-height:1.5;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex-shrink:0;color:rgba(255,255,255,0.7);"><path d="M20 6L9 17l-5-5"/></svg>
+              <span>Online — para todo o Brasil</span>
+            </span>
+          </li>
+          <li style="margin-top:10px;">
+            <span style="display:flex;align-items:flex-start;gap:8px;color:rgba(255,255,255,0.85);font-size:0.88rem;line-height:1.5;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex-shrink:0;margin-top:3px;color:rgba(255,255,255,0.7);"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              <span>Presencial apenas por agendamento<br>
+                <strong style="color:rgba(255,255,255,0.6);font-weight:500;">Pindamonhangaba e Taubaté</strong>
+              </span>
+            </span>
+          </li>
         </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Localização</h4>
-        <p style="margin-bottom:14px;color:rgba(255,255,255,0.7);font-size:0.9rem;">${CONFIG.endereco}</p>
-        <div class="footer-map"><iframe src="${CONFIG.googleMaps}" loading="lazy" title="Localização" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
       </div>
     </div>
     <div class="footer-bottom">
