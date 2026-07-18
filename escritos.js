@@ -1,21 +1,16 @@
 /* ============================================================================
-   ESCRITOS.JS (BLOG DE PSICOLOGIA)
-   ----------------------------------------------------------------------------
-   Blog simplificado focado em artigos e textos de psicologia.
-   - Leitores: apenas leitura, sem cadastro ou comentários.
-   - Admin: publicação de textos via E-mail e Senha.
-   ============================================================================ */
+   ESCRITOS.JS — Blog da psicanalista
+   Leitores: apenas leitura. Admin: e-mail + senha via Firebase.
+============================================================================ */
 
-/* --------------------------------- INIT FIREBASE --------------------------------- */
+/* ── FIREBASE ── */
 firebase.initializeApp(FIREBASE_CONFIG);
-const auth  = firebase.auth();
-const db    = firebase.firestore();
+const auth = firebase.auth();
+const db   = firebase.firestore();
 
-let currentUser   = null;
-let quill         = null;
-let editingPostId = null;
+let currentUser = null;
 
-/* --------------------------------- HELPERS --------------------------------- */
+/* ── HELPERS ── */
 function isAdmin() { return !!currentUser && currentUser.uid === ADMIN_UID; }
 
 function applyTheme() {
@@ -30,69 +25,134 @@ function applyTheme() {
   r.setProperty('--gray',         CONFIG.corCinza);
 }
 
-function fmtDate(timestamp) {
-  if (!timestamp || !timestamp.toDate) return '';
-  return timestamp.toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+function fmtDate(ts) {
+  if (!ts || !ts.toDate) return '';
+  return ts.toDate().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 function escapeHTML(str) {
-  const d = document.createElement('div'); d.textContent = str; return d.innerHTML;
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
 }
 function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('visible');
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toast.classList.remove('visible'), 3200);
+  showToast._t = setTimeout(() => t.classList.remove('visible'), 3200);
 }
 function getQueryParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
+function hideLoader() {
+  const l = document.getElementById('loader');
+  if (l) l.classList.add('hidden');
+}
 
-/* --------------------------------- ÍCONES --------------------------------- */
+/* ── ÍCONES ── */
 const ICONS = {
   edit:      '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>',
   trash:     '<path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
   arrowLeft: '<path d="M19 12H5M12 19l-7-7 7-7"/>',
-  postIcon:  '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 20V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/>', // Ícone que lembra livro/artigo
+  postIcon:  '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
   key:       '<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 3-9.6 9.6"/><path d="m15.5 7.5 3 3M18 5l3 3"/>',
 };
-function iconSVG(name, cls = '') {
-  return `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+function iconSVG(name) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+    style="width:18px;height:18px;display:inline-block;vertical-align:middle;">
+    ${ICONS[name] || ''}
+  </svg>`;
 }
 
-/* --------------------------------- AUTH ADMIN --------------------------------- */
+/* ── MOBILE MENU (FIX: nunca era inicializado na página de escritos) ── */
+function initMobileMenu() {
+  const toggle  = document.getElementById('menu-toggle');
+  const nav     = document.getElementById('nav-mobile');
+  const overlay = document.getElementById('nav-overlay');
+  if (!toggle || !nav || !overlay) return;
+
+  function closeMenu() {
+    toggle.classList.remove('open');
+    nav.classList.remove('open');
+    overlay.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+  function openMenu() {
+    toggle.classList.add('open');
+    nav.classList.add('open');
+    overlay.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+  }
+  toggle.addEventListener('click', () => nav.classList.contains('open') ? closeMenu() : openMenu());
+  overlay.addEventListener('click', closeMenu);
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+}
+
+/* ── HEADER SCROLL ── */
+function initHeaderScroll() {
+  const header = document.getElementById('site-header');
+  if (!header) return;
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 20);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* ── ADMIN AUTH BAR ── */
 function renderAdminBar() {
   const bar     = document.getElementById('admin-bar');
   const authBar = document.getElementById('admin-auth-bar');
+  if (!authBar) return;
 
   if (isAdmin()) {
     if (bar) bar.classList.add('visible');
-    // Adicionado o botão "Painel Admin" ao lado do botão "Sair"
     authBar.innerHTML = `
-      <div style="display: flex; gap: 8px;">
+      <div style="display:flex;gap:8px;">
         <button class="btn btn-outline btn-sm" id="btn-go-admin">Painel Admin</button>
-        <button class="btn btn-outline btn-sm" id="btn-signout" style="opacity: 0.8;">Sair</button>
-      </div>
-    `;
-    
-    document.getElementById('btn-go-admin').addEventListener('click', () => {
-      window.location.href = 'admin.html';
-    });
+        <button class="btn btn-outline btn-sm" id="btn-signout" style="opacity:.8;">Sair</button>
+      </div>`;
+    document.getElementById('btn-go-admin').addEventListener('click', () => { window.location.href = 'admin.html'; });
     document.getElementById('btn-signout').addEventListener('click', () => auth.signOut());
   } else {
     if (bar) bar.classList.remove('visible');
-    authBar.innerHTML = `<button class="btn-admin-login" id="btn-admin-login" title="Área administrativa" aria-label="Acesso administrativo">${iconSVG('key')}</button>`;
-    document.getElementById('btn-admin-login').addEventListener('click', () => {
-      window.location.href = 'admin.html';
-    });
+    authBar.innerHTML = `
+      <button class="btn-admin-login" id="btn-admin-login"
+        title="Área administrativa" aria-label="Acesso administrativo">
+        ${iconSVG('key')}
+      </button>`;
+    document.getElementById('btn-admin-login').addEventListener('click', () => { window.location.href = 'admin.html'; });
   }
 }
 
-// Monitora o estado de autenticação
+/* ── CONTEÚDO ESTÁTICO DO CONFIG ── */
+function renderBlogHeader() {
+  const titleEl = document.getElementById('blog-title');
+  const subEl   = document.getElementById('blog-subtitle');
+  if (titleEl) titleEl.textContent = CONFIG.blogTitulo   || 'Escritos';
+  if (subEl)   subEl.textContent   = CONFIG.blogSubtitulo || '';
+  document.title = `${CONFIG.blogTitulo || 'Escritos'} | ${CONFIG.nome}`;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', CONFIG.blogDescricaoSEO || CONFIG.blogSubtitulo || '');
+
+  /* Logo fallback com nome da profissional */
+  const nameEl = document.getElementById('escritos-logo-name');
+  if (nameEl) nameEl.textContent = CONFIG.nome || '';
+}
+
+function renderFooterYear() {
+  const el = document.getElementById('footer-year');
+  if (el) el.textContent = new Date().getFullYear();
+}
+
+/* ── FIREBASE AUTH ── */
+/* Fallback: esconde o loader após 5s caso o Firebase trave */
+setTimeout(hideLoader, 5000);
+
 auth.onAuthStateChanged(user => {
   currentUser = user;
-  renderAdminBar();
   applyTheme();
+  renderAdminBar();
+  hideLoader(); /* ← loader some aqui, assim que o Firebase responde */
 
   const postId = getQueryParam('post');
   if (postId) {
@@ -103,11 +163,11 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-/* --------------------------------- LISTAGEM --------------------------------- */
+/* ── LISTAGEM DE POSTS ── */
 function loadPostsList() {
   const grid = document.getElementById('posts-grid');
   if (!grid) return;
-  grid.innerHTML = '<p style="opacity:.6;">Carregando artigos…</p>';
+  grid.innerHTML = '<p style="opacity:.5;text-align:center;padding:40px 0;">Carregando…</p>';
 
   let query = db.collection('posts').orderBy('createdAt', 'desc');
   if (!isAdmin()) query = query.where('published', '==', true);
@@ -117,7 +177,11 @@ function loadPostsList() {
       grid.innerHTML = `
         <div class="empty-state">
           ${iconSVG('postIcon')}
-          <p>${isAdmin() ? 'Nenhum artigo publicado. Clique em "Novo Texto" para começar.' : 'Em breve, novos textos e reflexões por aqui.'}</p>
+          <p style="margin-top:12px;">
+            ${isAdmin()
+              ? 'Nenhum artigo ainda. Clique em "Novo post" para começar.'
+              : 'Em breve, novos textos e reflexões por aqui.'}
+          </p>
         </div>`;
       return;
     }
@@ -125,7 +189,7 @@ function loadPostsList() {
     attachCardEvents();
   }, err => {
     console.error(err);
-    grid.innerHTML = `<p style="opacity:.6;">Não foi possível carregar as publicações agora.</p>`;
+    grid.innerHTML = '<p style="opacity:.5;text-align:center;padding:40px 0;">Não foi possível carregar os artigos.</p>';
   });
 }
 
@@ -135,49 +199,59 @@ function renderPostCard(id, post) {
       ${!post.published ? '<span class="post-card-draft-badge">Rascunho</span>' : ''}
       ${isAdmin() ? `
         <div class="post-card-admin-actions">
-          <button class="edit-btn" data-id="${id}" aria-label="Editar Texto">${iconSVG('edit')}</button>
-          <button class="delete-btn" data-id="${id}" aria-label="Excluir Texto">${iconSVG('trash')}</button>
+          <button class="edit-btn"   data-id="${id}" aria-label="Editar">${iconSVG('edit')}</button>
+          <button class="delete-btn" data-id="${id}" aria-label="Excluir">${iconSVG('trash')}</button>
         </div>` : ''}
       <div class="post-card-header">
-        <img class="post-card-avatar" src="${CONFIG.logoSemFundo || CONFIG.fotoPrincipal}" alt="${escapeHTML(CONFIG.nome)}" loading="lazy">
+        <img class="post-card-avatar"
+          src="${CONFIG.logoSemFundo || CONFIG.fotoPrincipal}"
+          alt="${escapeHTML(CONFIG.nome)}" loading="lazy">
         <div class="post-card-header-info">
           <span class="post-card-author">${escapeHTML(CONFIG.nome)}</span>
           <span class="post-card-date">${fmtDate(post.createdAt)}</span>
         </div>
       </div>
       <a href="?post=${id}" class="post-card-link">
-        ${post.coverImage ? `<div class="post-card-cover"><img src="${post.coverImage}" alt="${escapeHTML(post.title || '')}" loading="lazy"></div>` : ''}
+        ${post.coverImage
+          ? `<div class="post-card-cover">
+               <img src="${post.coverImage}" alt="${escapeHTML(post.title || '')}" loading="lazy">
+             </div>`
+          : ''}
         <div class="post-card-body">
           <h3>${escapeHTML(post.title || 'Sem título')}</h3>
           <p class="post-card-excerpt">${escapeHTML(post.excerpt || '')}</p>
         </div>
       </a>
-    </article>
-  `;
+    </article>`;
 }
 
 function attachCardEvents() {
-  document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => { e.preventDefault(); openEditor(btn.dataset.id); });
-  });
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => { e.preventDefault(); confirmDeletePost(btn.dataset.id); });
-  });
+  document.querySelectorAll('.edit-btn').forEach(btn =>
+    btn.addEventListener('click', e => { e.preventDefault(); goToAdminEditor(btn.dataset.id); }));
+  document.querySelectorAll('.delete-btn').forEach(btn =>
+    btn.addEventListener('click', e => { e.preventDefault(); confirmDeletePost(btn.dataset.id); }));
 }
 
-/* --------------------------------- ARTIGO INDIVIDUAL --------------------------------- */
+/* Redireciona para o painel admin — editor vive lá */
+function goToAdminEditor(postId) {
+  window.location.href = postId
+    ? `admin.html?edit=${encodeURIComponent(postId)}`
+    : 'admin.html?new=1';
+}
+
+/* ── POST INDIVIDUAL ── */
 function loadPostDetail(postId) {
   const viewList = document.getElementById('view-list');
+  const view     = document.getElementById('view-post');
   if (viewList) viewList.style.display = 'none';
-  
-  const view = document.getElementById('view-post');
   if (!view) return;
+
   view.style.display = 'block';
-  view.innerHTML = '<p style="opacity:.6;text-align:center;padding:60px 0;">Carregando artigo…</p>';
+  view.innerHTML = '<p style="opacity:.5;text-align:center;padding:80px 0;">Carregando artigo…</p>';
 
   db.collection('posts').doc(postId).get().then(doc => {
     if (!doc.exists || (!doc.data().published && !isAdmin())) {
-      view.innerHTML = '<p style="text-align:center;padding:60px 0;">Artigo não encontrado.</p>';
+      view.innerHTML = '<p style="text-align:center;padding:80px 0;">Artigo não encontrado.</p>';
       return;
     }
     const post = doc.data();
@@ -188,22 +262,33 @@ function loadPostDetail(postId) {
           <span class="post-card-date">${fmtDate(post.createdAt)}</span>
           <h1>${escapeHTML(post.title || '')}</h1>
         </div>
-        ${post.coverImage ? `<div class="post-detail-cover"><img src="${post.coverImage}" alt="${escapeHTML(post.title || '')}"></div>` : ''}
+        ${post.coverImage
+          ? `<div class="post-detail-cover">
+               <img src="${post.coverImage}" alt="${escapeHTML(post.title || '')}">
+             </div>`
+          : ''}
         <div class="post-detail-content">${post.contentHTML || ''}</div>
         <div class="post-detail-actions">
           <a href="escritos.html" class="back-to-blog">${iconSVG('arrowLeft')} Voltar aos Artigos</a>
-          ${isAdmin() ? `<div style="display:flex;gap:10px;">
-            <button class="btn btn-outline btn-sm" id="detail-edit-btn">${iconSVG('edit')} Editar</button>
-            <button class="btn btn-outline btn-sm" id="detail-delete-btn" style="color:#B5453A;">${iconSVG('trash')} Excluir</button>
-          </div>` : ''}
+          ${isAdmin() ? `
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-outline btn-sm" id="detail-edit-btn">
+                ${iconSVG('edit')} Editar
+              </button>
+              <button class="btn btn-outline btn-sm" id="detail-delete-btn" style="color:#B5453A;">
+                ${iconSVG('trash')} Excluir
+              </button>
+            </div>` : ''}
         </div>
-      </div>
-    `;
+      </div>`;
 
     if (isAdmin()) {
-      document.getElementById('detail-edit-btn').addEventListener('click', () => openEditor(postId));
+      document.getElementById('detail-edit-btn')  .addEventListener('click', () => goToAdminEditor(postId));
       document.getElementById('detail-delete-btn').addEventListener('click', () => confirmDeletePost(postId, true));
     }
+  }).catch(err => {
+    console.error(err);
+    view.innerHTML = '<p style="text-align:center;padding:80px 0;">Erro ao carregar o artigo.</p>';
   });
 }
 
@@ -214,113 +299,25 @@ function closePostDetail() {
   if (viewList) viewList.style.display = 'block';
 }
 
-/* --------------------------------- EDITOR (ADMIN) --------------------------------- */
-function initQuill() {
-  if (quill) return;
-  quill = new Quill('#quill-editor', {
-    theme: 'snow',
-    placeholder: 'Escreva seu texto ou reflexão de psicologia aqui...',
-    modules: {
-      toolbar: {
-        container: [
-          [{ header: [2, 3, false] }],
-          ['bold', 'italic', 'underline'],
-          ['link', 'image'],
-          [{ list: 'ordered' }, { list: 'bullet' }],
-          ['clean'],
-        ],
-        handlers: {
-          image: () => {
-            const url = prompt('Cole a URL da imagem de cobertura ou ilustração:');
-            if (url) quill.insertEmbed(quill.getSelection()?.index || 0, 'image', url);
-          },
-        },
-      },
-    },
-  });
-}
-
-function openEditor(postId = null) {
-  if (!isAdmin()) return;
-  editingPostId = postId;
-  initQuill();
-  quill.setContents([]);
-  document.getElementById('editor-title').value = '';
-  document.getElementById('editor-cover').value = '';
-  document.getElementById('editor-excerpt').value = '';
-  document.getElementById('editor-published').checked = true;
-  document.getElementById('editor-heading').textContent = postId ? 'Editar artigo' : 'Novo texto / artigo';
-
-  if (postId) {
-    db.collection('posts').doc(postId).get().then(doc => {
-      if (!doc.exists) return;
-      const p = doc.data();
-      document.getElementById('editor-title').value   = p.title || '';
-      document.getElementById('editor-cover').value   = p.coverImage || '';
-      document.getElementById('editor-excerpt').value = p.excerpt || '';
-      document.getElementById('editor-published').checked = !!p.published;
-      quill.root.innerHTML = p.contentHTML || '';
-    });
-  }
-  document.getElementById('editor-overlay').classList.add('open');
-}
-
-function closeEditor() {
-  document.getElementById('editor-overlay').classList.remove('open');
-  editingPostId = null;
-}
-
-function savePost() {
-  if (!isAdmin()) return;
-  const title      = document.getElementById('editor-title').value.trim();
-  const coverImage = document.getElementById('editor-cover').value.trim();
-  const excerpt    = document.getElementById('editor-excerpt').value.trim();
-  const published  = document.getElementById('editor-published').checked;
-  const contentHTML = quill.root.innerHTML;
-
-  if (!title) { showToast('Dê um título ao seu artigo antes de salvar.'); return; }
-
-  const saveBtn = document.getElementById('editor-save-btn');
-  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Salvando…'; }
-
-  const data = {
-    title, coverImage, excerpt, contentHTML, published,
-    authorName: CONFIG.nome,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-  };
-
-  const ref = editingPostId ? db.collection('posts').doc(editingPostId) : db.collection('posts').doc();
-  if (!editingPostId) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-
-  ref.set(data, { merge: true })
-    .then(() => {
-      showToast(published ? '✓ Artigo publicado com sucesso!' : '✓ Rascunho salvo.');
-      closeEditor();
-    })
-    .catch(err => { console.error(err); showToast('Erro ao salvar o artigo.'); })
-    .finally(() => { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Salvar'; } });
-}
-
+/* ── EXCLUSÃO ── */
 function confirmDeletePost(postId, fromDetail = false) {
   if (!isAdmin()) return;
-  if (confirm('Deseja realmente excluir este artigo permanentemente?')) {
-    db.collection('posts').doc(postId).delete()
-      .then(() => {
-        showToast('Artigo removido.');
-        if (fromDetail) window.location.href = 'escritos.html';
-      })
-      .catch(err => { console.error(err); showToast('Erro ao excluir.'); });
-  }
+  if (!confirm('Deseja realmente excluir este artigo? Esta ação não pode ser desfeita.')) return;
+  db.collection('posts').doc(postId).delete()
+    .then(() => {
+      showToast('Artigo removido.');
+      if (fromDetail) window.location.href = 'escritos.html';
+    })
+    .catch(err => { console.error(err); showToast('Erro ao excluir o artigo.'); });
 }
 
-/* --------------------------------- BIND EVENTS --------------------------------- */
+/* ── INIT ── */
 document.addEventListener('DOMContentLoaded', () => {
+  renderBlogHeader();
+  renderFooterYear();
+  initMobileMenu();    /* FIX: menu mobile agora funciona em escritos.html */
+  initHeaderScroll();  /* FIX: header scroll agora funciona em escritos.html */
+
   const btnNewPost = document.getElementById('btn-new-post');
-  if (btnNewPost) btnNewPost.addEventListener('click', () => openEditor());
-
-  const btnCloseEditor = document.getElementById('editor-close-btn');
-  if (btnCloseEditor) btnCloseEditor.addEventListener('click', closeEditor);
-
-  const btnSavePost = document.getElementById('editor-save-btn');
-  if (btnSavePost) btnSavePost.addEventListener('click', savePost);
+  if (btnNewPost) btnNewPost.addEventListener('click', () => goToAdminEditor());
 });

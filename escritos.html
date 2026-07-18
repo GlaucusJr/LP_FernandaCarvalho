@@ -19,88 +19,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
 
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="s.css">
-
-  <!-- Editor de texto rico (só carregado no painel admin) -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
-
-  <style>
-    /* Estilos dedicados para correção e perfeita harmonia da Modal do Editor */
-    .editor-modal {
-      font-family: 'Sora', sans-serif;
-      color: var(--primary-dark, #0E3340);
-    }
-    .editor-modal h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: var(--primary-dark, #0E3340);
-      margin-bottom: 24px;
-    }
-    .editor-field {
-      margin-bottom: 20px;
-    }
-    .editor-field label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--primary-dark, #0E3340);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .editor-field input[type="text"], 
-    .editor-field input[type="url"] {
-      width: 100%;
-      padding: 11px 16px;
-      border-radius: 10px;
-      border: 1.5px solid rgba(26, 74, 91, 0.16);
-      font-family: 'Sora', sans-serif;
-      font-size: 0.94rem;
-      background: var(--background, #E8F2F6);
-      color: var(--text, #0E3340);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .editor-field input:focus {
-      border-color: var(--primary, #1A4A5B);
-    }
-    
-    /* Customização do Quill dentro da Modal */
-    #quill-editor { 
-      background: var(--background, #E8F2F6); 
-      border-radius: 0 0 10px 10px; 
-      min-height: 280px; 
-    }
-    .ql-toolbar.ql-snow { 
-      border-radius: 10px 10px 0 0 !important; 
-      border-color: rgba(26, 74, 91, 0.16) !important; 
-      background: #FFFFFF; 
-    }
-    .ql-container.ql-snow { 
-      border-radius: 0 0 10px 10px !important; 
-      border-color: rgba(26, 74, 91, 0.16) !important; 
-      font-family: 'Sora', sans-serif !important; 
-      font-size: 0.95rem;
-    }
-
-    /* Ajuste de Botões para alinhar com o padrão do projeto */
-    .btn-primary-custom {
-      display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px;
-      border-radius: 100px; background: var(--primary, #1A4A5B); color: #fff;
-      font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-primary-custom:hover { background: var(--primary-dark, #0E3340); }
-
-    .btn-outline-custom {
-      display: inline-flex; align-items: center; gap: 6px; padding: 9px 20px;
-      border-radius: 100px; border: 1.5px solid rgba(26, 74, 91, 0.16); color: var(--text, #0E3340);
-      font-size: 0.85rem; font-weight: 600; background: transparent; cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn-outline-custom:hover { border-color: var(--primary, #1A4A5B); background: var(--secondary, #C8DCE4); }
-  </style>
+  <link rel="stylesheet" href="escritos.css">
 </head>
 <body class="page-escritos">
 
@@ -112,7 +31,11 @@
 
   <header class="site-header" id="site-header">
     <div class="header-inner">
-      <a href="index.html" class="logo logo-link" id="logo-text" aria-label="Página inicial"></a>
+      <a href="index.html" class="logo logo-link" id="logo-text" aria-label="Voltar à página inicial">
+        <img src="assets/logo_semfundo.png" alt="" class="logo-img" id="escritos-logo-img"
+             onerror="this.style.display='none';document.getElementById('escritos-logo-name').style.display='inline'">
+        <span id="escritos-logo-name" style="display:none;"></span>
+      </a>
       <nav class="nav-desktop" aria-label="Navegação principal">
         <a href="index.html#quem-eu-sou">Quem eu sou</a>
         <a href="index.html#quando">Quando faz sentido</a>
@@ -177,45 +100,6 @@
     </div>
   </footer>
 
-  <!-- ==================== MODAL DO EDITOR (ADMIN) ==================== -->
-  <div class="editor-overlay" id="editor-overlay">
-    <div class="editor-modal">
-      <h2 id="editor-heading">Novo post</h2>
-
-      <div class="editor-field">
-        <label for="editor-title">Título *</label>
-        <input type="text" id="editor-title" placeholder="Título do post">
-      </div>
-
-      <div class="editor-field">
-        <label for="editor-cover">Imagem de capa (URL)</label>
-        <input type="url" id="editor-cover" placeholder="https://...">
-      </div>
-
-      <div class="editor-field">
-        <label for="editor-excerpt">Resumo (aparece na listagem)</label>
-        <input type="text" id="editor-excerpt" placeholder="Uma ou duas frases sobre o post">
-      </div>
-
-      <div class="editor-field">
-        <label>Conteúdo *</label>
-        <div id="quill-editor"></div>
-      </div>
-
-      <div class="editor-field editor-toggle">
-        <input type="checkbox" id="editor-published" checked>
-        <label for="editor-published" style="margin:0; font-weight: 600; text-transform: none; letter-spacing: normal;">Publicar (desmarque para salvar como rascunho)</label>
-      </div>
-
-      <div class="editor-actions">
-        <button class="btn-outline-custom" id="editor-close-btn">Cancelar</button>
-        <div class="editor-actions-right">
-          <button class="btn-primary-custom" id="editor-save-btn">Salvar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="toast" id="toast"></div>
 
   <!-- Firebase (Auth + Firestore) -->
@@ -223,15 +107,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 
-  <!-- Editor de texto rico -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
-
   <script src="config.js"></script>
   <script src="firebase-config.js"></script>
   <script src="escritos.js"></script>
-  <script>
-    window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hidden'), 300));
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>

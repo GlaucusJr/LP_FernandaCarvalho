@@ -428,6 +428,69 @@
     .btn-delete-confirm { padding: 10px 22px; border-radius: 100px; background: var(--danger); color: #fff; font-size: 0.88rem; font-weight: 600; }
     .btn-delete-confirm:hover { opacity: 0.85; }
 
+    /* ---- UPLOAD ---- */
+    .upload-drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      background: var(--bg);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .upload-drop-zone:hover,
+    .upload-drop-zone.drag-over {
+      border-color: var(--primary);
+      background: var(--secondary);
+    }
+    .upload-progress-wrap {
+      margin-top: 10px;
+      background: var(--border);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .upload-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: 100px;
+      transition: width 0.2s;
+    }
+    .upload-progress-label {
+      display: block;
+      text-align: right;
+      font-size: 0.72rem;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+    .cover-preview { position: relative; }
+    .cover-preview-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+    }
+    .cover-remove-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(4px);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--danger);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: background 0.2s;
+    }
+    .cover-remove-btn:hover { background: #fff; }
+
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .admin-content { padding: 20px; }
@@ -582,11 +645,31 @@
           <div class="editor-card">
             <h3>Imagem de capa</h3>
             <div class="field">
-              <label for="ed-cover">URL da imagem</label>
+              <label>Enviar imagem do computador</label>
+              <div class="upload-drop-zone" id="upload-drop-zone">
+                <input type="file" id="ed-cover-file" accept="image/*" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;color:var(--gray);margin-bottom:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p style="font-size:0.88rem;color:var(--gray);margin:0;">Arraste uma imagem ou <span style="color:var(--primary);font-weight:600;cursor:pointer;" id="upload-browse-trigger">clique para escolher</span></p>
+                <p style="font-size:0.75rem;color:var(--gray);margin:4px 0 0;">JPG, PNG, WebP — máx. 5 MB</p>
+              </div>
+              <!-- barra de progresso -->
+              <div class="upload-progress-wrap" id="upload-progress-wrap" style="display:none;">
+                <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                <span class="upload-progress-label" id="upload-progress-label">0%</span>
+              </div>
+            </div>
+            <div class="field" style="margin-top:4px;">
+              <label for="ed-cover">Ou cole uma URL externa</label>
               <input type="url" id="ed-cover" placeholder="https://...">
               <p class="field-hint">Recomendado: 1200×630px ou proporção 16:10.</p>
             </div>
             <div class="cover-preview" id="cover-preview">
+              <div class="cover-preview-actions" id="cover-preview-actions">
+                <button class="cover-remove-btn" id="cover-remove-btn" title="Remover imagem">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Remover
+                </button>
+              </div>
               <img id="cover-preview-img" src="" alt="Prévia da capa">
             </div>
           </div>
@@ -637,8 +720,8 @@
 
   <script>
   firebase.initializeApp(FIREBASE_CONFIG);
-  const auth = firebase.auth();
-  const db   = firebase.firestore();
+  const auth    = firebase.auth();
+  const db      = firebase.firestore();
 
   let currentUser   = null;
   let allPosts      = [];
@@ -671,6 +754,106 @@
 
   function escapeHTML(str) {
     const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML;
+  }
+
+  /* ── UPLOAD DE IMAGEM — Cloudinary (gratuito, sem backend) ── */
+  // ⚠️ Preencha com os seus dados do Cloudinary (cloudinary.com → gratuito)
+  const CLOUDINARY_CLOUD_NAME = 'dpwomi6i';
+  const CLOUDINARY_UPLOAD_PRESET = 'FernandaCarvalho';
+
+  let uploadedCoverUrl = null;
+
+  function initUpload() {
+    const dropZone      = document.getElementById('upload-drop-zone');
+    const fileInput     = document.getElementById('ed-cover-file');
+    const browseTrigger = document.getElementById('upload-browse-trigger');
+    const progressWrap  = document.getElementById('upload-progress-wrap');
+    const progressBar   = document.getElementById('upload-progress-bar');
+    const progressLbl   = document.getElementById('upload-progress-label');
+    const urlInput      = document.getElementById('ed-cover');
+
+    function setPreview(url) {
+      urlInput.value = url;
+      document.getElementById('cover-preview-img').src = url;
+      document.getElementById('cover-preview').classList.add('visible');
+    }
+
+    function uploadFile(file) {
+      if (!file || !file.type.startsWith('image/')) { showToast('Selecione um arquivo de imagem.'); return; }
+      if (file.size > 5 * 1024 * 1024) { showToast('Imagem muito grande. Máximo: 5 MB.'); return; }
+
+      if (CLOUDINARY_CLOUD_NAME === 'SEU_CLOUD_NAME') {
+        showToast('⚠️ Configure o Cloudinary no admin.html antes de fazer upload.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      formData.append('folder', 'escritos');
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
+
+      progressWrap.style.display = 'block';
+      progressBar.style.width    = '0%';
+      progressLbl.textContent    = '0%';
+
+      xhr.upload.addEventListener('progress', e => {
+        if (!e.lengthComputable) return;
+        const pct = Math.round((e.loaded / e.total) * 100);
+        progressBar.style.width = pct + '%';
+        progressLbl.textContent = pct + '%';
+      });
+
+      xhr.addEventListener('load', () => {
+        progressWrap.style.display = 'none';
+        if (xhr.status === 200) {
+          const res = JSON.parse(xhr.responseText);
+          uploadedCoverUrl = res.secure_url;
+          setPreview(res.secure_url);
+          showToast('✓ Imagem enviada!');
+        } else {
+          console.error(xhr.responseText);
+          showToast('Erro no upload. Verifique as configurações do Cloudinary.');
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        progressWrap.style.display = 'none';
+        showToast('Erro de rede no upload.');
+      });
+
+      xhr.send(formData);
+    }
+
+    browseTrigger.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', e => { if (e.target !== browseTrigger) fileInput.click(); });
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) uploadFile(fileInput.files[0]); });
+
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) uploadFile(file);
+    });
+
+    urlInput.addEventListener('input', function() {
+      const val = this.value.trim();
+      uploadedCoverUrl = null;
+      document.getElementById('cover-preview-img').src = val;
+      document.getElementById('cover-preview').classList.toggle('visible', !!val);
+    });
+
+    document.getElementById('cover-remove-btn').addEventListener('click', () => {
+      urlInput.value = '';
+      uploadedCoverUrl = null;
+      fileInput.value = '';
+      document.getElementById('cover-preview').classList.remove('visible');
+      document.getElementById('cover-preview-img').src = '';
+    });
   }
 
   const loginBtn = document.getElementById('btn-login');
@@ -711,12 +894,14 @@
 
   document.getElementById('btn-signout').addEventListener('click', () => auth.signOut());
 
+  let uploadInited = false;
   auth.onAuthStateChanged(user => {
     if (user && user.uid === ADMIN_UID) {
       currentUser = user;
       setLoginError('');
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app').classList.add('visible');
+      if (!uploadInited) { initUpload(); uploadInited = true; }
       loadPosts();
     } else if (user) {
       auth.signOut();
@@ -742,6 +927,24 @@
     });
   }
 
+  let deepLinkHandled = false;
+  function handleDeepLink() {
+    if (deepLinkHandled) return;
+    deepLinkHandled = true;
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get('edit');
+    const isNew  = params.get('new');
+    if (editId && allPosts.some(p => p.id === editId)) {
+      openEditor(editId);
+      setSidebarActive('nav-posts');
+    } else if (isNew) {
+      goNew();
+    } else {
+      return;
+    }
+    window.history.replaceState({}, '', 'admin.html');
+  }
+
   function loadPosts() {
     db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(snap => {
       allPosts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -751,6 +954,7 @@
       document.getElementById('counter-published').textContent = pub;
       document.getElementById('counter-drafts').textContent   = draft;
       renderPostsTable(currentFilter);
+      handleDeepLink();
     }, () => showToast('Não foi possível carregar os Posts.'));
   }
 
@@ -804,6 +1008,10 @@
     document.getElementById('ed-published').checked = true;
     document.getElementById('toggle-label-text').textContent = 'Publicado';
     document.getElementById('cover-preview').classList.remove('visible');
+    uploadedCoverUrl = null;
+    const fi = document.getElementById('ed-cover-file');
+    if (fi) fi.value = '';
+    document.getElementById('upload-progress-wrap').style.display = 'none';
     document.getElementById('editor-heading').textContent = postId ? 'Editar post' : 'Novo post';
     if (postId) {
       const post = allPosts.find(p => p.id === postId);
@@ -829,38 +1037,71 @@
     document.getElementById('toggle-label-text').textContent = this.checked ? 'Publicado' : 'Rascunho';
   });
 
-  function savePost(forcePublished) {
-    const title      = document.getElementById('ed-title').value.trim();
-    const excerpt    = document.getElementById('ed-excerpt').value.trim();
-    const coverImage = document.getElementById('ed-cover').value.trim();
-    const published  = forcePublished !== undefined ? forcePublished : document.getElementById('ed-published').checked;
-    const contentHTML = quill.root.innerHTML;
-    if (!title) { showToast('Digite um título antes de salvar.'); return; }
-    
-    const btnId = forcePublished ? 'btn-publish' : 'btn-save-draft';
-    const btn   = document.getElementById(btnId);
-    btn.disabled = true; btn.textContent = 'Salvando…';
-    
-    const data = { title, excerpt, coverImage, contentHTML, published, authorName: CONFIG.nome, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
-    const ref  = editingPostId ? db.collection('posts').doc(editingPostId) : db.collection('posts').doc();
-    if (!editingPostId) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-    
-    ref.set(data, { merge: true }).then(() => {
-      showToast(published ? '✓ Post publicado!' : '✓ Rascunho salvo.');
-      editingPostId = ref.id;
-      showView('posts'); setSidebarActive('nav-posts');
-    }).catch(() => showToast('Erro ao salvar. Tente novamente.'))
-    .finally(() => { 
-      btn.disabled = false; 
-      if (forcePublished) {
-        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg> Publicar`; 
-      } else {
-        btn.textContent = 'Salvar rascunho';
-      }
-    });
+  function restoreBtn(btn, isPublish) {
+    btn.disabled = false;
+    if (isPublish) {
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+        <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg> Publicar`;
+    } else {
+      btn.textContent = 'Salvar rascunho';
+    }
   }
 
-  document.getElementById('btn-publish').addEventListener('click', () => savePost(true));
+  function savePost(forcePublished) {
+    const title       = document.getElementById('ed-title').value.trim();
+    const excerpt     = document.getElementById('ed-excerpt').value.trim();
+    // Prioriza URL do upload; se não houver, usa o campo de URL manual
+    const coverImage  = uploadedCoverUrl || document.getElementById('ed-cover').value.trim();
+    const published   = !!forcePublished;
+    const contentHTML = quill.root.innerHTML;
+
+    if (!title) { showToast('Digite um título antes de salvar.'); return; }
+
+    const isPublish = !!forcePublished;
+    const btnId     = isPublish ? 'btn-publish' : 'btn-save-draft';
+    const btn       = document.getElementById(btnId);
+    btn.disabled    = true;
+    btn.textContent = 'Salvando…';
+
+    const isNew = !editingPostId;
+    const ref   = isNew
+      ? db.collection('posts').doc()
+      : db.collection('posts').doc(editingPostId);
+
+    const data = {
+      title,
+      excerpt,
+      coverImage,
+      contentHTML,
+      published,
+      authorName: CONFIG.nome,
+      updatedAt:  firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    if (isNew) data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+
+    ref.set(data, { merge: true })
+      .then(() => {
+        editingPostId = ref.id;
+        showToast(published ? '✓ Post publicado!' : '✓ Rascunho salvo.');
+        restoreBtn(btn, isPublish);
+        showView('posts');
+        setSidebarActive('nav-posts');
+      })
+      .catch(err => {
+        console.error('Firestore save error:', err);
+        // Mostra o código de erro real para facilitar diagnóstico
+        const msg = err.code === 'permission-denied'
+          ? '⚠️ Sem permissão no Firestore. Veja as instruções de configuração das regras.'
+          : err.code === 'storage/unauthorized'
+          ? '⚠️ Sem permissão no Storage. Veja as instruções de configuração.'
+          : `Erro ao salvar: ${err.message || err.code || 'desconhecido'}`;
+        showToast(msg);
+        restoreBtn(btn, isPublish);
+      });
+  }
+
+  document.getElementById('btn-publish').addEventListener('click',    () => savePost(true));
   document.getElementById('btn-save-draft').addEventListener('click', () => savePost(false));
 
   function openDeleteModal(id) { deleteTarget = id; document.getElementById('delete-modal').classList.add('open'); }
