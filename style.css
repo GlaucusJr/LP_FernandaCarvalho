@@ -155,6 +155,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .logo-img { height: 44px; width: auto; display: block; }
 .logo-img-footer { height: 38px; filter: brightness(0) invert(1); }
 .footer-logo-img { height: 42px; width: auto; display: block; filter: brightness(0) invert(1); }
+.footer-name-logo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  display: block;
+}
 
 .nav-desktop { display: flex; align-items: center; gap: 32px; }
 .nav-desktop a { font-size: 0.92rem; font-weight: 500; color: var(--text); position: relative; padding: 4px 0; }
@@ -171,7 +180,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   white-space: nowrap; flex-shrink: 0;
 }
 .btn-nav-instagram:hover { background: var(--accent); border-color: var(--accent); color: var(--white); }
-@media (max-width: 480px) { .btn-nav-instagram { display: none; } }
+
+/* Mobile: ambos os botões viram bolinhas com ícone */
+@media (max-width: 768px) {
+  .btn-nav-instagram {
+    width: 38px; height: 38px; padding: 0; border-radius: 50%;
+  }
+  .btn-nav-instagram-label { display: none; }
+  .btn-nav-instagram::before {
+    content: '';
+    display: block;
+    width: 17px; height: 17px;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='20' height='20' rx='5' ry='5'/%3E%3Cpath d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/%3E%3Cline x1='17.5' y1='6.5' x2='17.51' y2='6.5'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='20' height='20' rx='5' ry='5'/%3E%3Cpath d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/%3E%3Cline x1='17.5' y1='6.5' x2='17.51' y2='6.5'/%3E%3C/svg%3E");
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+  /* WhatsApp nav button também vira bolinha */
+  .header-cta .btn-sm .wa-link-text { display: none; }
+  .header-cta .btn-sm {
+    width: 38px; height: 38px; padding: 0; border-radius: 50%; min-width: unset;
+  }
+  .header-cta .btn-sm svg { width: 18px; height: 18px; margin: 0; }
+}
 .menu-toggle { display: none; flex-direction: column; gap: 5px; padding: 6px; z-index: 1100; }
 .menu-toggle span { width: 24px; height: 2px; background: var(--primary-dark); transition: transform 0.3s var(--ease), opacity 0.3s var(--ease); }
 .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -617,15 +651,15 @@ body.modal-open { overflow: hidden; }
 
 /* -------------------------------- MINHA CLÍNICA — TÓPICOS CLICÁVEIS -------------------------------- */
 .minha-clinica-section {
-  background: var(--primary-dark);
-  color: var(--white);
+  background: var(--surface);
+  color: var(--text);
   position: relative;
   overflow: hidden;
 }
-.minha-clinica-section .section-head h2 { color: var(--white); }
-.minha-clinica-section .eyebrow { color: rgba(255,255,255,0.7); }
+.minha-clinica-section .section-head h2 { color: var(--primary-dark); }
+.minha-clinica-section .eyebrow { color: var(--gray); }
 .minha-clinica-section .eyebrow::before { background: var(--accent); }
-.minha-clinica-section .section-head p { color: rgba(255,255,255,0.75); }
+.minha-clinica-section .section-head p { color: var(--gray); }
 .clinica-topicos-list {
   display: flex;
   flex-direction: column;
@@ -637,18 +671,18 @@ body.modal-open { overflow: hidden; }
   display: flex;
   align-items: center;
   gap: 16px;
-  background: rgba(255,255,255,0.06);
-  border: 1.5px solid rgba(255,255,255,0.12);
+  background: var(--background);
+  border: 1.5px solid var(--border-soft);
   border-radius: var(--radius-md);
   padding: 18px 22px;
   text-align: left;
   width: 100%;
   cursor: pointer;
-  color: var(--white);
+  color: var(--text);
   transition: background 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.3s var(--ease);
 }
 .clinica-topico-item:hover {
-  background: rgba(255,255,255,0.1);
+  background: var(--secondary);
   border-color: var(--accent);
   transform: translateX(4px);
 }
@@ -671,12 +705,12 @@ body.modal-open { overflow: hidden; }
 .clinica-topico-titulo {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--white);
+  color: var(--primary-dark);
   line-height: 1.35;
 }
 .clinica-topico-resumo {
   font-size: 0.84rem;
-  color: rgba(255,255,255,0.6);
+  color: var(--gray);
   font-weight: 400;
 }
 .clinica-topico-arrow {

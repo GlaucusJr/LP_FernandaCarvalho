@@ -63,7 +63,10 @@ function renderHeader() {
     igBtn.rel = 'noopener';
     igBtn.setAttribute('aria-label', 'Instagram');
     igBtn.className = 'btn-nav-instagram';
-    igBtn.innerHTML = `<span class="btn-nav-instagram-label">Instagram</span>`;
+    igBtn.innerHTML = `
+      <span class="btn-nav-label-desktop">Instagram</span>
+      <span class="btn-nav-icon-mobile">${iconSVG('instagram')}</span>
+    `;
     const menuToggle = ctaEl.querySelector('.menu-toggle');
     ctaEl.insertBefore(igBtn, menuToggle);
   }
@@ -310,9 +313,6 @@ function renderPrimeiroPasso() {
         </div>
 
       </div>
-    </div>
-    <div class="hero-wave-bottom">
-      <svg class="wave-divider into-primary" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,40 L1440,80 L0,80 Z"/></svg>
     </div>
   `;
   depoimentosSection.after(section);
@@ -586,12 +586,10 @@ function renderFooter() {
   el.innerHTML = `
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="#top" class="logo" aria-label="Página inicial">
-          <img src="${CONFIG.logoSemFundo}" alt="${CONFIG.nome}" class="footer-logo-img"
-               onerror="this.style.display='none';this.nextSibling.style.display='inline'">
-          <span style="display:none;">${CONFIG.nome}</span>
+        <a href="#top" class="logo footer-name-logo" aria-label="Página inicial">
+          ${CONFIG.nome}
         </a>
-        <p>${CONFIG.especialidade} · ${CONFIG.crp}</p>
+        <p>${CONFIG.especialidade}</p>
         <a href="mailto:${CONFIG.email}" style="display:block;margin-top:6px;color:rgba(255,255,255,0.55);font-size:0.82rem;">${CONFIG.email}</a>
         <div class="footer-social">
           ${CONFIG.instagram ? `<a href="${CONFIG.instagram}" target="_blank" rel="noopener" aria-label="Instagram">${iconSVG('instagram')}</a>` : ''}

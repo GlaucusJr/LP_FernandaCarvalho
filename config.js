@@ -26,18 +26,18 @@ const CONFIG = {
   // Contato
   telefone: "(12) 98205-2447",
   whatsapp: "5512982052447",
-  whatsappMensagemPadrao: "Olá! Encontrei seu site e gostaria de saber mais sobre os atendimentos.",
-  instagram: "https://www.instagram.com/psifernandacarvalho.br?igsh=MXB4bGE1OGJheXZ1bg==",
+  whatsappMensagemPadrao: "Olá! Encontrei seu site e gostaria de saber mais sobre o primeiro encontro e sobre como iniciar uma análise.",
+  instagram: "https://instagram.com/psifernandacarvalho.br",
   email: "contatopsifernandacarvalho@hotmail.com",
 
   // Endereço / Local
-  endereco: "Pindamonhangaba - SP",
-  cep: "12400-900",
-  googleMaps: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d470491.1464257471!2d-45.818249780535936!3d-22.887091951498146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ccf035c90d8779%3A0x777b9d2b6f79519!2sPindamonhangaba%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1784385156883!5m2!1spt-BR!2sbr",
-  googleMapsLink: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d470491.1464257471!2d-45.818249780535936!3d-22.887091951498146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ccf035c90d8779%3A0x777b9d2b6f79519!2sPindamonhangaba%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1784385156883!5m2!1spt-BR!2sbr",
+  endereco: "Rua Exemplo, 100 — Jardim Paulista, São Paulo - SP",
+  cep: "01310-000",
+  googleMaps: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.0!2d-46.65!3d-23.56!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sSão+Paulo!5e0!3m2!1spt-BR!2sbr!4v1700000000000",
+  googleMapsLink: "https://maps.google.com/?q=Jardim+Paulista,+São+Paulo+-+SP",
 
   // Marca
-  urlSite: "https://www.psifernandacarvalho.online",
+  urlSite: "https://psifernandacarvalho.online",
 
   // -----------------------------------------------------------------------
   // PALETA DE CORES DA PSICANALISTA
@@ -62,7 +62,7 @@ const CONFIG = {
   subheadline: "A análise é um espaço onde a palavra pode encontrar lugar. Um tempo para compreender a própria história, elaborar conflitos e construir novos sentidos para aquilo que se vive.",
 
   // Sobre mim
-  sobreMim: "Sou psicanalista, com formação em Psicanálise Clínica fundamentada na obra de Freud e Lacan. Atendo adolescentes e adultos, oferecendo um espaço de escuta singular, onde cada pessoa possa se dizer e elaborar, no seu próprio tempo, aquilo que vive.",
+  sobreMim: "Sou psicanalista com formação em psicanálise clínica de orientação freudo-lacaniana. Atendo adultos em sofrimento psíquico, buscando oferecer um espaço de escuta singular — um lugar onde cada pessoa possa se dizer e, a partir disso, encontrar novos caminhos.",
 
   // Cards "Quem eu sou" — conteúdo dos modais
   minhaFormacao: {
