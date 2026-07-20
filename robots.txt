@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Bloqueia acesso ao painel admin para crawlers
+Disallow: /admin.html
+Disallow: /firebase-config.js
+
+Sitemap: https://psifernandacarvalho.online/sitemap.xml

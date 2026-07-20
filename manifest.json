@@ -1,0 +1,22 @@
+{
+  "name": "Fernanda Carvalho | Psicanalista",
+  "short_name": "Fernanda Carvalho",
+  "description": "Atendimento psicanalítico online e presencial em Pindamonhangaba e Taubaté.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E8F2F6",
+  "theme_color": "#1A4A5B",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "assets/logo_semfundo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo_semfundo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

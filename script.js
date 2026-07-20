@@ -63,7 +63,7 @@ function renderHeader() {
     igBtn.rel = 'noopener';
     igBtn.setAttribute('aria-label', 'Instagram');
     igBtn.className = 'btn-nav-instagram';
-    igBtn.innerHTML = iconSVG('instagram');
+    igBtn.innerHTML = `<span class="btn-nav-instagram-label">Instagram</span>`;
     const menuToggle = ctaEl.querySelector('.menu-toggle');
     ctaEl.insertBefore(igBtn, menuToggle);
   }
@@ -433,6 +433,137 @@ function renderFAQ() {
   });
 }
 
+/* --------------------------------- ESCRITOS (carrossel) --------------------------------- */
+function renderEscritos() {
+  const el = document.getElementById('escritos-section');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-head center" data-animate="fade-up">
+        <div class="eyebrow">Blog</div>
+        <h2>Escritos</h2>
+        <p style="max-width:520px;margin:0 auto;">${CONFIG.blogSubtitulo || 'Reflexões sobre a escuta, o inconsciente e os sentidos da vida.'}</p>
+      </div>
+      <div class="escritos-carousel-wrap" data-animate="fade-up">
+        <button class="escritos-arrow escritos-arrow-left" id="escritos-prev" aria-label="Post anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="escritos-viewport" id="escritos-viewport">
+          <div class="escritos-track" id="escritos-track">
+            <div class="escritos-loading">Carregando escritos…</div>
+          </div>
+        </div>
+        <button class="escritos-arrow escritos-arrow-right" id="escritos-next" aria-label="Próximo post">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="escritos-dots" id="escritos-dots"></div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="escritos.html" class="btn btn-outline">Ver todos os escritos ${iconSVG('arrowRight')}</a>
+      </div>
+    </div>
+  `;
+
+  // Carrega posts do Firebase
+  if (typeof firebase === 'undefined' || typeof FIREBASE_CONFIG === 'undefined') return;
+
+  // Inicializa só se ainda não foi (evita erro de app duplicado)
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+
+  const db = firebase.firestore();
+  db.collection('posts')
+    .where('published', '==', true)
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then(snap => {
+      const track = document.getElementById('escritos-track');
+      const dotsEl = document.getElementById('escritos-dots');
+      if (!track) return;
+
+      if (snap.empty) {
+        track.innerHTML = '<p class="escritos-empty">Em breve, novos textos por aqui.</p>';
+        return;
+      }
+
+      const posts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      track.innerHTML = posts.map(post => `
+        <a class="escritos-slide" href="escritos.html?post=${post.id}" aria-label="${post.title || 'Escrito'}">
+          ${post.coverImage
+            ? `<img src="${post.coverImage}" alt="${post.title || ''}" loading="lazy">`
+            : `<div class="escritos-slide-no-cover">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                 <span>${post.title || 'Sem título'}</span>
+               </div>`}
+          <div class="escritos-slide-overlay">
+            <span class="escritos-slide-title">${post.title || ''}</span>
+          </div>
+        </a>
+      `).join('');
+
+      // Dots
+      dotsEl.innerHTML = posts.map((_, i) =>
+        `<button class="escritos-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Post ${i + 1}"></button>`
+      ).join('');
+
+      initEscritosCarousel(posts.length);
+    })
+    .catch(() => {
+      const track = document.getElementById('escritos-track');
+      if (track) track.innerHTML = '<p class="escritos-empty">Não foi possível carregar os escritos.</p>';
+    });
+}
+
+function initEscritosCarousel(total) {
+  let current = 0;
+  const track    = document.getElementById('escritos-track');
+  const prev     = document.getElementById('escritos-prev');
+  const next     = document.getElementById('escritos-next');
+  const dotsEl   = document.getElementById('escritos-dots');
+  if (!track || !prev || !next) return;
+
+  function getVisible() {
+    const vw = window.innerWidth;
+    if (vw >= 1024) return 3;
+    if (vw >= 640)  return 2;
+    return 1;
+  }
+
+  function updateArrows() {
+    prev.disabled = current === 0;
+    next.disabled = current >= total - getVisible();
+    prev.style.opacity = prev.disabled ? '0.3' : '1';
+    next.style.opacity = next.disabled ? '0.3' : '1';
+  }
+
+  function goTo(index) {
+    const visible = getVisible();
+    current = Math.max(0, Math.min(index, total - visible));
+    const slideW = track.querySelector('.escritos-slide')?.offsetWidth || 0;
+    const gap = 20;
+    track.style.transform = `translateX(-${current * (slideW + gap)}px)`;
+    dotsEl.querySelectorAll('.escritos-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    updateArrows();
+  }
+
+  prev.addEventListener('click', () => goTo(current - 1));
+  next.addEventListener('click', () => goTo(current + 1));
+  dotsEl.querySelectorAll('.escritos-dot').forEach(d =>
+    d.addEventListener('click', () => goTo(Number(d.dataset.index)))
+  );
+
+  // Touch/swipe
+  let startX = 0;
+  track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1));
+  });
+
+  window.addEventListener('resize', () => goTo(current), { passive: true });
+  updateArrows();
+}
+
 /* --------------------------------- CTA FINAL --------------------------------- */
 function renderCTAFinal() {
   const el = document.getElementById('cta-final-content');
@@ -508,12 +639,69 @@ function renderFooter() {
 
 /* --------------------------------- SEO --------------------------------- */
 function renderSEO() {
-  document.title = `${CONFIG.nome} | Psicanalista em ${CONFIG.cidade}`;
-  const desc = `${CONFIG.nome}, psicanalista. Atendimento presencial em ${CONFIG.cidade} e online para todo o Brasil.`;
-  const tag = document.querySelector('meta[name="description"]');
-  if (tag) tag.setAttribute('content', desc);
+  const url        = CONFIG.urlSite || 'https://psifernandacarvalho.online';
+  const nome       = CONFIG.nome;
+  const esp        = CONFIG.especialidade;
+  const cidade1    = 'Pindamonhangaba';
+  const cidade2    = 'Taubaté';
+  const title      = `${nome} | ${esp} em ${cidade1} e ${cidade2}`;
+  const desc       = `${nome}, psicanalista. Atendimento online para todo o Brasil e presencial em ${cidade1} e ${cidade2}, por agendamento. Escuta analítica de orientação freudo-lacaniana.`;
+  const image      = `${url}/assets/hero.png`;
+
+  // Título e meta description
+  document.title = title;
+  _setMeta('name', 'description', desc);
+
+  // Canonical
   const canonical = document.querySelector('link[rel="canonical"]');
-  if (canonical) canonical.setAttribute('href', CONFIG.urlSite);
+  if (canonical) canonical.setAttribute('href', `${url}/`);
+
+  // Open Graph
+  _setMeta('property', 'og:title',       title);
+  _setMeta('property', 'og:description', desc);
+  _setMeta('property', 'og:url',         `${url}/`);
+  _setMeta('property', 'og:image',       image);
+  _setMeta('property', 'og:site_name',   `${nome} | ${esp}`);
+
+  // Twitter Card
+  _setMeta('name', 'twitter:title',       title);
+  _setMeta('name', 'twitter:description', desc);
+  _setMeta('name', 'twitter:image',       image);
+
+  // FAQ Schema — gerado dinamicamente a partir do array FAQ do config
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ.map(f => ({
+      '@type': 'Question',
+      name: f.pergunta,
+      acceptedAnswer: { '@type': 'Answer', text: f.resposta }
+    }))
+  };
+  _injectSchema('schema-faq', faqSchema);
+}
+
+// Injeta ou atualiza um bloco JSON-LD pelo id
+function _injectSchema(id, data) {
+  let el = document.getElementById(id);
+  if (!el) {
+    el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.id = id;
+    document.head.appendChild(el);
+  }
+  el.textContent = JSON.stringify(data);
+}
+
+// Cria ou atualiza meta tags dinamicamente
+function _setMeta(attrName, attrValue, content) {
+  let el = document.querySelector(`meta[${attrName}="${attrValue}"]`);
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attrName, attrValue);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
 }
 
 /* --------------------------------- INTERAÇÕES --------------------------------- */
@@ -572,6 +760,7 @@ function init() {
   renderPrimeiroPasso();
   renderMinhaClinica();
   renderFAQ();
+  renderEscritos();
   renderCTAFinal();
   renderFooter();
 

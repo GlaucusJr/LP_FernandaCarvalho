@@ -4,20 +4,133 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Psicanalista | Landing Page</title>
-  <meta name="description" content="Atendimento psicanalítico presencial e online.">
-  <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#1F4E5F">
-  <link rel="canonical" href="">
+  <!-- ══ SEO PRIMÁRIO ══ -->
+  <title id="seo-title">Fernanda Carvalho | Psicanalista em Pindamonhangaba e Taubaté</title>
+  <meta name="description"        content="Fernanda Carvalho, psicanalista. Atendimento online para todo o Brasil e presencial em Pindamonhangaba e Taubaté, por agendamento. Escuta analítica de orientação freudo-lacaniana.">
+  <meta name="keywords"           content="psicanalista, psicanálise, psicanalista online, psicanalista Pindamonhangaba, psicanalista Taubaté, atendimento psicanalítico, terapia online, Fernanda Carvalho psicanalista">
+  <meta name="author"             content="Fernanda Carvalho">
+  <meta name="robots"             content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="theme-color"        content="#1A4A5B">
+  <link rel="canonical"           href="https://psifernandacarvalho.online/">
 
-  <link rel="icon" href="assets/logo_semfundo.png" type="image/png">
+  <!-- ══ OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ══ -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="Fernanda Carvalho | Psicanalista">
+  <meta property="og:url"         content="https://psifernandacarvalho.online/">
+  <meta property="og:title"       content="Fernanda Carvalho | Psicanalista — Atendimento Online e Presencial">
+  <meta property="og:description" content="Um espaço de escuta para a sua história. Atendimento psicanalítico online para todo o Brasil e presencial em Pindamonhangaba e Taubaté.">
+  <meta property="og:image"       content="https://psifernandacarvalho.online/assets/hero.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height"content="630">
+  <meta property="og:image:alt"   content="Fernanda Carvalho, Psicanalista">
+  <meta property="og:locale"      content="pt_BR">
+
+  <!-- ══ TWITTER CARD ══ -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Fernanda Carvalho | Psicanalista">
+  <meta name="twitter:description" content="Um espaço de escuta para a sua história. Atendimento psicanalítico online e presencial em Pindamonhangaba e Taubaté.">
+  <meta name="twitter:image"       content="https://psifernandacarvalho.online/assets/hero.png">
+  <meta name="twitter:image:alt"   content="Fernanda Carvalho, Psicanalista">
+
+  <!-- ══ SCHEMA.ORG — JSON-LD ══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://psifernandacarvalho.online/#pessoa",
+        "name": "Fernanda Carvalho",
+        "jobTitle": "Psicanalista",
+        "description": "Psicanalista com formação em psicanálise clínica de orientação freudo-lacaniana. Atendimento online para todo o Brasil e presencial em Pindamonhangaba e Taubaté.",
+        "url": "https://psifernandacarvalho.online/",
+        "image": "https://psifernandacarvalho.online/assets/hero.png",
+        "sameAs": [
+          "https://instagram.com/psifernandacarvalho.br"
+        ],
+        "knowsAbout": ["Psicanálise", "Saúde Mental", "Psicoterapia", "Psicanálise Freudo-Lacaniana"],
+        "areaServed": [
+          { "@type": "City", "name": "Pindamonhangaba" },
+          { "@type": "City", "name": "Taubaté" },
+          { "@type": "Country", "name": "Brasil" }
+        ],
+        "email": "contatopsifernandacarvalho@hotmail.com"
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://psifernandacarvalho.online/#servico",
+        "name": "Fernanda Carvalho — Psicanalista",
+        "description": "Atendimento psicanalítico online para todo o Brasil e presencial em Pindamonhangaba e Taubaté, por agendamento.",
+        "url": "https://psifernandacarvalho.online/",
+        "logo": "https://psifernandacarvalho.online/assets/logo_semfundo.png",
+        "image": "https://psifernandacarvalho.online/assets/hero.png",
+        "priceRange": "$$",
+        "telephone": "",
+        "email": "contatopsifernandacarvalho@hotmail.com",
+        "areaServed": "BR",
+        "serviceType": "Psicanalítica",
+        "availableChannel": [
+          { "@type": "ServiceChannel", "serviceType": "Online", "availableLanguage": "Portuguese" },
+          { "@type": "ServiceChannel", "serviceType": "Presencial", "availableLanguage": "Portuguese" }
+        ],
+        "address": [
+          { "@type": "PostalAddress", "addressLocality": "Pindamonhangaba", "addressRegion": "SP", "addressCountry": "BR" },
+          { "@type": "PostalAddress", "addressLocality": "Taubaté", "addressRegion": "SP", "addressCountry": "BR" }
+        ],
+        "founder": { "@id": "https://psifernandacarvalho.online/#pessoa" },
+        "sameAs": ["https://instagram.com/psifernandacarvalho.br"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://psifernandacarvalho.online/#site",
+        "url": "https://psifernandacarvalho.online/",
+        "name": "Fernanda Carvalho | Psicanalista",
+        "inLanguage": "pt-BR",
+        "publisher": { "@id": "https://psifernandacarvalho.online/#pessoa" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://psifernandacarvalho.online/#pagina",
+        "url": "https://psifernandacarvalho.online/",
+        "name": "Fernanda Carvalho | Psicanalista em Pindamonhangaba e Taubaté",
+        "description": "Atendimento psicanalítico online e presencial. Escuta analítica de orientação freudo-lacaniana.",
+        "inLanguage": "pt-BR",
+        "isPartOf": { "@id": "https://psifernandacarvalho.online/#site" },
+        "about": { "@id": "https://psifernandacarvalho.online/#pessoa" },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://psifernandacarvalho.online/" }
+          ]
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "Como acontecem as sessões?", "acceptedAnswer": { "@type": "Answer", "text": "As sessões são realizadas semanalmente, em dia e horário previamente combinados." } },
+          { "@type": "Question", "name": "As sessões são online?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Os atendimentos acontecem por videochamada, em ambiente reservado e sigiloso." } },
+          { "@type": "Question", "name": "Onde acontecem os atendimentos presenciais?", "acceptedAnswer": { "@type": "Answer", "text": "Os atendimentos presenciais podem ser realizados em Pindamonhangaba ou Taubaté, mediante disponibilidade e agendamento prévio." } },
+          { "@type": "Question", "name": "As conversas são sigilosas?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. O sigilo é um dos princípios fundamentais da prática psicanalítica." } },
+          { "@type": "Question", "name": "Os planos de saúde são aceitos?", "acceptedAnswer": { "@type": "Answer", "text": "Os atendimentos são particulares. No momento não realizo atendimentos por convênios ou planos de saúde." } }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- ══ FAVICONS ══ -->
+  <link rel="icon"             href="assets/logo_semfundo.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/logo_semfundo.png">
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest"         href="manifest.json">
 
+  <!-- ══ PERFORMANCE — FONTS ══ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+  <link rel="preload"    as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet"           href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap">
+
+  <!-- ══ PERFORMANCE — HERO IMAGE ══ -->
+  <link rel="preload" as="image" href="assets/hero.png" fetchpriority="high">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -110,6 +223,9 @@
       </div>
     </section>
 
+    <!-- ==================== ESCRITOS (carrossel) ==================== -->
+    <section class="escritos-section" id="escritos-section" aria-labelledby="escritos-heading"></section>
+
   </main>
 
   <footer class="site-footer" aria-label="Rodapé">
@@ -122,6 +238,12 @@
   <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
+
+  <!-- Firebase (para carregar posts na home) -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
   <script src="config.js" defer></script>
   <script src="script.js" defer></script>
