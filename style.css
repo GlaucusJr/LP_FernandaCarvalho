@@ -272,7 +272,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .about-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
 .about-photo { order: 2; position: relative; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-soft); aspect-ratio: 1/1; max-width: 440px; margin-left: auto; }
 .about-text { order: 1; }
-.about-photo img { width: 100%; height: 100%; object-fit: cover; }
+.about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .about-text .lead { font-size: 1.1rem; margin-bottom: 28px; }
 
 /* ---- Cards "Quem eu sou" ---- */
