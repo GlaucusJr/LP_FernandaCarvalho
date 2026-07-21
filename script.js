@@ -370,6 +370,7 @@ function renderMinhaClinica() {
         `).join('')}
       </div>
     </div>
+    <svg class="wave-divider clinica-to-faq-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%;height:auto;margin-top:20px;"><path d="M0,20 C240,55 480,0 720,25 C960,50 1200,5 1440,20 L1440,60 L0,60 Z" fill="var(--background)"/></svg>
   `;
   primeiroPasso.after(section);
 
