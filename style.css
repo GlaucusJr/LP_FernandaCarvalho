@@ -180,32 +180,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   white-space: nowrap; flex-shrink: 0;
 }
 .btn-nav-instagram:hover { background: var(--accent); border-color: var(--accent); color: var(--white); }
-
-/* Mobile: ambos os botões viram bolinhas com ícone */
-@media (max-width: 768px) {
-  .btn-nav-instagram {
-    width: 38px; height: 38px; padding: 0; border-radius: 50%;
-  }
-  .btn-nav-instagram-label { display: none; }
-  .btn-nav-instagram::before {
-    content: '';
-    display: block;
-    width: 17px; height: 17px;
-    background-color: currentColor;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='20' height='20' rx='5' ry='5'/%3E%3Cpath d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/%3E%3Cline x1='17.5' y1='6.5' x2='17.51' y2='6.5'/%3E%3C/svg%3E");
-    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='20' height='20' rx='5' ry='5'/%3E%3Cpath d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'/%3E%3Cline x1='17.5' y1='6.5' x2='17.51' y2='6.5'/%3E%3C/svg%3E");
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-  }
-  /* WhatsApp nav button também vira bolinha */
-  .header-cta .btn-sm .wa-link-text { display: none; }
-  .header-cta .btn-sm {
-    width: 38px; height: 38px; padding: 0; border-radius: 50%; min-width: unset;
-  }
-  .header-cta .btn-sm svg { width: 18px; height: 18px; margin: 0; }
-}
+/* No mobile o Instagram fica dentro do menu — esconde do header */
+@media (max-width: 768px) { .btn-nav-instagram { display: none; } }
 .menu-toggle { display: none; flex-direction: column; gap: 5px; padding: 6px; z-index: 1100; }
 .menu-toggle span { width: 24px; height: 2px; background: var(--primary-dark); transition: transform 0.3s var(--ease), opacity 0.3s var(--ease); }
 .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -220,6 +196,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .nav-mobile.open { transform: translateX(0); }
 .nav-mobile a { font-size: 1.15rem; font-weight: 600; color: var(--primary-dark); }
+.nav-mobile a.btn-primary { color: var(--white) !important; }
+.nav-mobile-cta { font-size: 1.15rem; font-weight: 600; color: var(--primary-dark); }
+.btn-mobile-ig {
+  background: transparent !important;
+  color: var(--primary-dark) !important;
+  border: 1.5px solid var(--primary-dark) !important;
+  box-shadow: none !important;
+  font-size: 1rem;
+}
 .nav-overlay {
   position: fixed; inset: 0; background: rgba(58,46,61,0.35); z-index: 1040;
   opacity: 0; visibility: hidden; transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
@@ -243,7 +228,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .btn-outline:hover { border-color: var(--primary); background: var(--white); transform: translateY(-2px); }
 .btn-sm { padding: 11px 20px; font-size: 0.86rem; }
 .header-cta .btn-sm { height: 38px; padding: 0 16px; font-size: 0.82rem; }
-.header-cta .btn-sm svg { width: 16px; height: 16px; }
 .btn-block { width: 100%; }
 
 /* ---------------------------------- HERO ----------------------------------- */
